@@ -1,0 +1,304 @@
+/* Everrealm — base stylesheet */
+
+:root {
+  --bg: #2c2416;
+  --bg-panel: #3a3020;
+  --bg-hover: #4a3e2a;
+  --text: #f0e6d2;
+  --text-muted: #c4b896;
+  --text-flavor: #b0a080;
+  --accent: #d4a64a;
+  --accent-hover: #e8be5e;
+  --border: #5a4e3a;
+  --error-bg: #4a2020;
+  --error-text: #ffb0b0;
+  --btn-bg: #4a3e2a;
+  --btn-bg-hover: #5a4e3a;
+  --btn-disabled: #3a3020;
+  --btn-disabled-text: #7a6e5a;
+  --radius: 4px;
+  --max-width: 720px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: normal;
+  color: var(--accent);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 1.25rem;
+  font-weight: normal;
+  color: var(--accent);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+/* ── Realm Summary ── */
+
+dl {
+  margin: 0 0 1rem;
+}
+
+dt {
+  font-weight: bold;
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin-top: 0.5rem;
+}
+
+dd {
+  margin: 0 0 0 0.5rem;
+}
+
+.flavor-text,
+.settlement-description {
+  display: block;
+  font-style: italic;
+  color: var(--text-flavor);
+  font-size: 0.9em;
+  margin-top: 0.15rem;
+}
+
+/* ── Buttons ── */
+
+button {
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--btn-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  margin: 0.25rem 0.25rem 0.25rem 0;
+  transition: background 0.15s;
+}
+
+button:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+button:disabled {
+  background: var(--btn-disabled);
+  color: var(--btn-disabled-text);
+  cursor: not-allowed;
+}
+
+/* ── Lists ── */
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+/* ── Error alert ── */
+
+[role="alert"] {
+  background: var(--error-bg);
+  border: 1px solid #8a4040;
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+}
+
+[role="alert"] p {
+  margin: 0 0 0.5rem;
+  color: var(--error-text);
+}
+
+/* ── Offline earnings banner ── */
+
+.offline-earnings {
+  background: #3a3a1a;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.offline-earnings p {
+  margin: 0 0 0.5rem;
+  color: var(--accent);
+}
+
+.prereq-locked {
+  color: var(--btn-disabled-text);
+  font-size: 0.85em;
+}
+
+/* ── Setup screen ── */
+
+.form-help {
+  font-size: 0.85em;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0.5rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  color: var(--text-muted);
+  font-size: 0.9em;
+  margin-bottom: 0.25rem;
+}
+
+input[type="text"] {
+  font-family: inherit;
+  font-size: 1rem;
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+input[type="text"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ── Reset confirmation ── */
+
+.reset-confirm {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* ── Keyboard shortcuts ── */
+
+.shortcuts dl {
+  margin: 0.5rem 0;
+}
+
+.shortcuts dt {
+  display: inline;
+  font-family: monospace;
+  background: var(--btn-bg);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+.shortcuts dd {
+  display: inline;
+  margin: 0 0 0 0.5rem;
+}
+
+.shortcuts dt::after {
+  content: " — ";
+  color: var(--text-muted);
+}
+
+/* ── Details / collapsible ── */
+
+details {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 1rem;
+}
+
+summary {
+  cursor: pointer;
+  color: var(--accent);
+  font-size: 0.95rem;
+  padding: 0.25rem 0;
+}
+
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+/* ── Story log ── */
+
+ol {
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+ol li {
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+/* ── Visually hidden (for live region) ── */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 600px) {
+  main {
+    padding: 1rem 0.5rem 2rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  button {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.6rem;
+  }
+}
