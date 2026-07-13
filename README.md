@@ -11,7 +11,7 @@ is equally enjoyable for blind and sighted players.
 The game runs entirely in the browser. No account required. Your realm is
 saved locally.
 
-**[Play Everrealm](https://everrealm.pages.dev)** (deploy link TBD)
+**[Play Everrealm](https://everrealm.lanie.work)**
 
 ## Features
 
