@@ -1,5 +1,6 @@
 // src/engine/techtree/types.ts
 
+import type { AgeId } from "../ages/types";
 import type { Prosperity } from "../prosperity/types";
 import type { SpecialBuilding } from "../settlements/types";
 import type { StandardLevel } from "../settlements/types";
@@ -32,4 +33,6 @@ export interface TechNode {
    * 2 Huts (or higher) to develop into this building.
    */
   readonly minimumSourceLevel: StandardLevel;
+  /** The Age from which this tech node becomes available. */
+  readonly availableFromAge: AgeId;
 }

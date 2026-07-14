@@ -1,6 +1,7 @@
 // src/engine/improvements/types.ts
 
 import type { Prosperity } from "../prosperity/types";
+import type { AgeId } from "../ages/types";
 
 export type ImprovementId = string & { readonly __brand: "ImprovementId" };
 
@@ -10,6 +11,7 @@ export interface Improvement {
   readonly description: string;
   readonly cost: Prosperity;
   readonly effects: readonly ImprovementEffect[];
+  readonly availableFromAge: AgeId;
 }
 
 export type ImprovementEffect =

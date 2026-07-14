@@ -7,6 +7,7 @@ import {
   isBuildingUnlocked,
   getTechForBuilding,
   meetsPrerequisites,
+  isTechAvailableForAge,
 } from "../../../engine/techtree/definitions";
 import type { TechNodeId } from "../../../engine/techtree/types";
 
@@ -137,6 +138,23 @@ describe("techtree definitions", () => {
       expect(meetsPrerequisites(scholarship, ["agriculture" as TechNodeId])).toBe(true);
       expect(meetsPrerequisites(scholarship, ["trade" as TechNodeId])).toBe(true);
       expect(meetsPrerequisites(scholarship, ["crafts" as TechNodeId])).toBe(true);
+    });
+  });
+
+  describe("isTechAvailableForAge", () => {
+    it("Tier 1 tech (agriculture) is available in FoundingAge", () => {
+      const agriculture = getTechNode("agriculture" as TechNodeId)!;
+      expect(isTechAvailableForAge(agriculture, "FoundingAge")).toBe(true);
+    });
+
+    it("Tier 2 tech (scholarship) is NOT available in FoundingAge", () => {
+      const scholarship = getTechNode("scholarship" as TechNodeId)!;
+      expect(isTechAvailableForAge(scholarship, "FoundingAge")).toBe(false);
+    });
+
+    it("Tier 2 tech (scholarship) is available in AgeOfGrowth", () => {
+      const scholarship = getTechNode("scholarship" as TechNodeId)!;
+      expect(isTechAvailableForAge(scholarship, "AgeOfGrowth")).toBe(true);
     });
   });
 });

@@ -302,3 +302,13 @@ ol li {
     padding: 0.5rem 0.6rem;
   }
 }
+
+/* ── Onboarding tips ── */
+
+.onboarding-tip {
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border-left: 3px solid #4a9;
+  background: rgba(68, 170, 153, 0.1);
+  font-style: italic;
+}

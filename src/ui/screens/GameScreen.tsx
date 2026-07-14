@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { GameApi } from "../hooks/useGame";
+import type { GameState } from "../../engine/state/GameState";
 import type { SettlementLevel, StandardLevel } from "../../engine/settlements/types";
 import { useAnnouncements } from "../hooks/useAnnouncements";
 import { RealmSummary } from "../components/RealmSummary";
@@ -12,6 +13,7 @@ import { StoryLog } from "../components/StoryLog";
 import { ActionBar } from "../components/ActionBar";
 import { OfflineEarnings } from "../components/OfflineEarnings";
 import { Statistics } from "../components/Statistics";
+import { OnboardingTip } from "../components/OnboardingTip";
 import { LiveRegion } from "../../accessibility/LiveRegion";
 import { levelIndex } from "../../engine/settlements/progression";
 import { getTechForBuilding } from "../../engine/techtree/definitions";
@@ -46,10 +48,33 @@ const DEVELOP_SHORTCUTS: Record<string, SettlementLevel> = {
   q: "Aqueduct",
 };
 
+/**
+ * Returns a contextual onboarding tip for the first few turns, or null
+ * once the player is past the early game.
+ */
+function getOnboardingTip(turn: number, state: GameState): string | null {
+  if (turn > 4) return null;
+
+  const settlementCount = state.settlements.reduce((sum, s) => sum + s.quantity, 0);
+
+  if (turn <= 1 && settlementCount === 0) {
+    return "Welcome to Everrealm! Press E to establish your first settlement. Each settlement costs 10 Prosperity.";
+  }
+  if (turn <= 2 && settlementCount >= 2) {
+    return "You have multiple settlements! Press T to develop two Tents into a Hut. Developing earns Prosperity.";
+  }
+  if (turn <= 3) {
+    return "Keep establishing and developing settlements. Two Huts become a Cottage, two Cottages become a House. Build toward a Citadel to advance to the next Age!";
+  }
+  return null;
+}
+
 export function GameScreen({ game }: Props) {
   const announcements = useAnnouncements(game.state);
   const gameRef = useRef(game);
   gameRef.current = game;
+
+  const tip = getOnboardingTip(game.state.turn, game.state);
 
   // Keyboard shortcuts for common actions.
   // Only skips when focus is in a text input (not buttons, so NVDA
@@ -104,6 +129,8 @@ export function GameScreen({ game }: Props) {
         effectiveCapacity={game.effectiveCapacity}
         passiveRatePerHour={game.passiveRatePerHour}
       />
+
+      {tip && <OnboardingTip tip={tip} />}
 
       <ActionBar
         canEstablish={game.canEstablish}

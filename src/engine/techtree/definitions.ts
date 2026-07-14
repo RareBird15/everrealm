@@ -1,5 +1,7 @@
 // src/engine/techtree/definitions.ts
 
+import type { AgeId } from "../ages/types";
+import { getAge } from "../ages/definitions";
 import type { TechNode, TechNodeId } from "./types";
 
 // ── Balance constants ──
@@ -26,6 +28,7 @@ export const TECH_NODES: readonly TechNode[] = [
     ],
     buildingDescription: "Farms generate +3 Prosperity per hour and add +1 to develop rewards for each Farm in the realm. Requires at least Huts to build.",
     minimumSourceLevel: "Hut",
+    availableFromAge: "FoundingAge" as AgeId,
   },
   {
     id: "trade" as TechNodeId,
@@ -40,6 +43,7 @@ export const TECH_NODES: readonly TechNode[] = [
     ],
     buildingDescription: "Markets generate +2 Prosperity per hour and add +2 to establish rewards for each Market in the realm. Requires at least Cottages to build.",
     minimumSourceLevel: "Cottage",
+    availableFromAge: "FoundingAge" as AgeId,
   },
   {
     id: "crafts" as TechNodeId,
@@ -54,6 +58,7 @@ export const TECH_NODES: readonly TechNode[] = [
     ],
     buildingDescription: "Workshops generate +1 Prosperity per hour and reduce establish cost by 1 for each Workshop in the realm (minimum cost 1). Requires at least Houses to build.",
     minimumSourceLevel: "House",
+    availableFromAge: "FoundingAge" as AgeId,
   },
   // ── Tier 2 ──
   {
@@ -69,6 +74,7 @@ export const TECH_NODES: readonly TechNode[] = [
     buildingDescription: "Libraries add +25 to each discovery reward for each Library in the realm. Requires at least Manors to build.",
     requires: ["agriculture" as TechNodeId, "trade" as TechNodeId, "crafts" as TechNodeId],
     minimumSourceLevel: "Manor",
+    availableFromAge: "AgeOfGrowth" as AgeId,
   },
   {
     id: "governance" as TechNodeId,
@@ -83,6 +89,7 @@ export const TECH_NODES: readonly TechNode[] = [
     buildingDescription: "Each Town Hall adds +1 to settlement capacity. Requires at least Villages to build.",
     requires: ["agriculture" as TechNodeId, "trade" as TechNodeId, "crafts" as TechNodeId],
     minimumSourceLevel: "Village",
+    availableFromAge: "AgeOfGrowth" as AgeId,
   },
   {
     id: "engineering" as TechNodeId,
@@ -97,6 +104,7 @@ export const TECH_NODES: readonly TechNode[] = [
     buildingDescription: "Each Aqueduct increases the base passive income rate by 5%. Requires at least Towns to build.",
     requires: ["agriculture" as TechNodeId, "trade" as TechNodeId, "crafts" as TechNodeId],
     minimumSourceLevel: "Town",
+    availableFromAge: "AgeOfGrowth" as AgeId,
   },
 ];
 
@@ -141,4 +149,19 @@ export function meetsPrerequisites(
 ): boolean {
   if (!node.requires || node.requires.length === 0) return true;
   return node.requires.some((req) => unlockedTechs.some((u) => u === req));
+}
+
+/**
+ * Returns true if `node` is available in the given `currentAge`.
+ * A tech node is available once the realm has reached the Age
+ * specified by `node.availableFromAge` (or any later Age).
+ */
+export function isTechAvailableForAge(
+  node: TechNode,
+  currentAge: AgeId,
+): boolean {
+  const required = getAge(node.availableFromAge);
+  const current = getAge(currentAge);
+  if (!required || !current) return true;
+  return current.index >= required.index;
 }
