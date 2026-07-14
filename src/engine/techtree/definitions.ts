@@ -15,6 +15,15 @@ export const TECH_TIER2_COST = 200;
 /** Cost per Tier 3 tech tree node. */
 export const TECH_TIER3_COST = 500;
 
+/** Cost per Tier 4 tech tree node. */
+export const TECH_TIER4_COST = 1000;
+
+/** Cost per Tier 5 tech tree node. */
+export const TECH_TIER5_COST = 2000;
+
+/** Cost per Tier 6 tech tree node. */
+export const TECH_TIER6_COST = 4000;
+
 // ── Tier 1 tech tree nodes ──
 
 export const TECH_NODES: readonly TechNode[] = [
@@ -154,6 +163,144 @@ export const TECH_NODES: readonly TechNode[] = [
     requires: ["scholarship" as TechNodeId, "governance" as TechNodeId, "engineering" as TechNodeId],
     minimumSourceLevel: "Manor",
     availableFromAge: "AgeOfLords" as AgeId,
+  },
+  // ── Tier 4 (Golden Age) ──
+  {
+    id: "architecture" as TechNodeId,
+    name: "Architecture",
+    description: "Master builders raise cathedrals of glass and stone that dwarf everything before them. Unlocks Cathedral buildings.",
+    tier: 4,
+    cost: TECH_TIER4_COST,
+    unlocksBuilding: "Cathedral",
+    buildingEffects: [
+      { kind: "DiscoveryBonusPer", amount: 100 },
+    ],
+    buildingDescription: "Each Cathedral adds +100 to each discovery reward for each Cathedral in the realm. Requires at least Towns to build.",
+    requires: ["masonry" as TechNodeId, "banking" as TechNodeId, "medicine" as TechNodeId],
+    minimumSourceLevel: "Town",
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  {
+    id: "diplomacy" as TechNodeId,
+    name: "Diplomacy",
+    description: "Envoy networks and treaty houses bind distant peoples to your realm's cause, expanding its capacity for growth. Unlocks Embassy buildings.",
+    tier: 4,
+    cost: TECH_TIER4_COST,
+    unlocksBuilding: "Embassy",
+    buildingEffects: [
+      { kind: "CapacityPerBuilding", amount: 3 },
+    ],
+    buildingDescription: "Each Embassy adds +3 to settlement capacity. Requires at least Villages to build.",
+    requires: ["masonry" as TechNodeId, "banking" as TechNodeId, "medicine" as TechNodeId],
+    minimumSourceLevel: "Village",
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  {
+    id: "astronomy" as TechNodeId,
+    name: "Astronomy",
+    description: "Astronomers chart the heavens from domed observatories, discerning patterns that multiply the realm's prosperity. Unlocks Observatory buildings.",
+    tier: 4,
+    cost: TECH_TIER4_COST,
+    unlocksBuilding: "Observatory",
+    buildingEffects: [
+      { kind: "PassiveRateMultiplierPer", amount: 0.10 },
+    ],
+    buildingDescription: "Each Observatory increases the base passive income rate by 10%. Requires at least Cities to build.",
+    requires: ["masonry" as TechNodeId, "banking" as TechNodeId, "medicine" as TechNodeId],
+    minimumSourceLevel: "City",
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  // ── Tier 5 (Age of Legends) ──
+  {
+    id: "heroism" as TechNodeId,
+    name: "Heroism",
+    description: "Legendary heroes gather in great halls, and their deeds inspire every act of development across the realm. Unlocks Hero's Hall buildings.",
+    tier: 5,
+    cost: TECH_TIER5_COST,
+    unlocksBuilding: "HerosHall",
+    buildingEffects: [
+      { kind: "DevelopBonusPer", amount: 3 },
+    ],
+    buildingDescription: "Each Hero's Hall adds +3 to develop rewards for each Hero's Hall in the realm. Requires at least Manors to build.",
+    requires: ["architecture" as TechNodeId, "diplomacy" as TechNodeId, "astronomy" as TechNodeId],
+    minimumSourceLevel: "Manor",
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  {
+    id: "philosophy" as TechNodeId,
+    name: "Philosophy",
+    description: "Philosopher-gardeners cultivate tranquility alongside wisdom, and the realm prospers in quiet harmony. Unlocks Garden buildings.",
+    tier: 5,
+    cost: TECH_TIER5_COST,
+    unlocksBuilding: "Garden",
+    buildingEffects: [
+      { kind: "PassivePerHour", amount: 10 },
+    ],
+    buildingDescription: "Gardens generate +10 Prosperity per hour for each Garden in the realm. Requires at least Houses to build.",
+    requires: ["architecture" as TechNodeId, "diplomacy" as TechNodeId, "astronomy" as TechNodeId],
+    minimumSourceLevel: "House",
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  {
+    id: "alchemy" as TechNodeId,
+    name: "Alchemy",
+    description: "Alchemists transmute lead into gold and scarcity into abundance, reducing the cost of every new foundation. Unlocks Laboratory buildings.",
+    tier: 5,
+    cost: TECH_TIER5_COST,
+    unlocksBuilding: "Laboratory",
+    buildingEffects: [
+      { kind: "EstablishCostReductionPer", amount: 2 },
+    ],
+    buildingDescription: "Each Laboratory reduces establish cost by 2 for each Laboratory in the realm (minimum cost 1). Requires at least Cottages to build.",
+    requires: ["architecture" as TechNodeId, "diplomacy" as TechNodeId, "astronomy" as TechNodeId],
+    minimumSourceLevel: "Cottage",
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  // ── Tier 6 (Age of Myths) ──
+  {
+    id: "mythology" as TechNodeId,
+    name: "Mythology",
+    description: "The realm's myths take on a life of their own, and temples arise where the divine and mortal planes intertwine. Unlocks Temple buildings.",
+    tier: 6,
+    cost: TECH_TIER6_COST,
+    unlocksBuilding: "Temple",
+    buildingEffects: [
+      { kind: "DiscoveryBonusPer", amount: 200 },
+    ],
+    buildingDescription: "Each Temple adds +200 to each discovery reward for each Temple in the realm. Requires at least Towns to build.",
+    requires: ["heroism" as TechNodeId, "philosophy" as TechNodeId, "alchemy" as TechNodeId],
+    minimumSourceLevel: "Town",
+    availableFromAge: "AgeOfMyths" as AgeId,
+  },
+  {
+    id: "divinity" as TechNodeId,
+    name: "Divinity",
+    description: "Oracles commune with the divine, and their visions bend the flow of prosperity itself toward the realm. Unlocks Oracle buildings.",
+    tier: 6,
+    cost: TECH_TIER6_COST,
+    unlocksBuilding: "Oracle",
+    buildingEffects: [
+      { kind: "PassiveRateMultiplierPer", amount: 0.15 },
+    ],
+    buildingDescription: "Each Oracle increases the base passive income rate by 15%. Requires at least Cities to build.",
+    requires: ["heroism" as TechNodeId, "philosophy" as TechNodeId, "alchemy" as TechNodeId],
+    minimumSourceLevel: "City",
+    availableFromAge: "AgeOfMyths" as AgeId,
+  },
+  {
+    id: "eternity" as TechNodeId,
+    name: "Eternity",
+    description: "Eternal spires pierce the veil of time itself, and the realm's capacity for growth becomes limitless. Unlocks Eternal Spire buildings.",
+    tier: 6,
+    cost: TECH_TIER6_COST,
+    unlocksBuilding: "EternalSpire",
+    buildingEffects: [
+      { kind: "CapacityPerBuilding", amount: 5 },
+    ],
+    buildingDescription: "Each Eternal Spire adds +5 to settlement capacity. Requires at least Villages to build.",
+    requires: ["heroism" as TechNodeId, "philosophy" as TechNodeId, "alchemy" as TechNodeId],
+    minimumSourceLevel: "Village",
+    availableFromAge: "AgeOfMyths" as AgeId,
   },
 ];
 

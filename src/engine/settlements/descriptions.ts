@@ -31,6 +31,19 @@ export const SETTLEMENT_DESCRIPTIONS: Readonly<Record<SettlementLevel, string>> 
   Shrine: "A sacred enclosure where the realm honors the old powers. Incense drifts skyward and the faithful leave offerings at the stone altar.",
   Bank: "A fortified treasury where the realm's wealth is stored and lent. Ledgers track every coin, and vault doors stand thick as castle walls.",
   Apothecary: "A workshop of remedies and tinctures, where dried herbs hang from the rafters and the apothecary measures cures by the drop.",
+
+  // Tier 4 special buildings (Golden Age)
+  Cathedral: "A soaring cathedral of glass and stone, its spire piercing the clouds. Pilgrims travel from every corner of the realm to witness its radiance.",
+  Embassy: "A grand hall of polished marble where envoys from distant lands broker alliances, negotiate treaties, and share the wealth of nations.",
+  Observatory: "A domed tower perched on the highest ground, where astronomers chart the heavens and unlock secrets written in the stars.",
+  // Tier 5 special buildings (Age of Legends)
+  Garden: "Terraced gardens of impossible beauty, where every bloom is cultivated with philosophical precision and the air hums with tranquility.",
+  Laboratory: "A sprawling laboratory of alchemical apparatus, crucibles, and retorts, where the boundaries of matter are tested and redefined.",
+  HerosHall: "A mead hall of legendary renown, where heroes gather to feast and plan their next great quest. Their deeds echo through the ages.",
+  // Tier 6 special buildings (Age of Myths)
+  Temple: "A temple of Living stone, where myth and devotion intertwine. The divine presence is palpable, and the faithful are never turned away.",
+  Oracle: "A sacred precinct where the veil between worlds grows thin. The oracle speaks in riddles that pierce the veil of the future.",
+  EternalSpire: "A spire that defies time itself, its summit lost in the clouds. Legends say it will stand when all else has crumbled to dust.",
 };
 
 /**

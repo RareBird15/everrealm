@@ -167,13 +167,26 @@ export function ActionBar({
           <dd>Develop into Bank</dd>
           <dt>P</dt>
           <dd>Develop into Apothecary</dd>
+          <dt>R</dt>
+          <dd>Develop into Cathedral</dd>
+          <dt>J</dt>
+          <dd>Develop into Embassy</dd>
+          <dt>K</dt>
+          <dd>Develop into Observatory</dd>
+          <dt>X</dt>
+          <dd>Develop into Garden</dd>
+          <dt>Y</dt>
+          <dd>Develop into Laboratory</dd>
+          <dt>Z</dt>
+          <dd>Develop into Hero's Hall</dd>
         </dl>
         <p className="form-help">
           Shortcuts develop the first eligible stack. Standard level shortcuts
           (T through I) develop that level using the default progression path.
-          Special building shortcuts (F, M, O, L, G, Q, S, B, P) develop the first
-          available standard level stack into that building. Shortcuts work
-          except when typing in a text field.
+          Special building shortcuts (F, M, O, L, G, Q, S, B, P, R, J, K, X, Y, Z)
+          develop the first available standard level stack into that building.
+          Temple, Oracle, and Eternal Spire have no shortcut — use the on-screen
+          buttons. Shortcuts work except when typing in a text field.
         </p>
       </details>
     </section>

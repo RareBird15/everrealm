@@ -129,6 +129,81 @@ export const IMPROVEMENTS: readonly Improvement[] = [
     effects: [{ kind: "IncreaseActiveReward", amount: 5 }],
     availableFromAge: "AgeOfLords" as AgeId,
   },
+  // ── Tier 4 (Golden Age) ──
+  {
+    id: id("great_basilica"),
+    name: "Great Basilica",
+    description: "A vast basilica of arched ceilings and golden light, drawing pilgrims whose offerings enrich every discovery. +200 to all discovery rewards.",
+    cost: 1200,
+    effects: [{ kind: "IncreaseDiscoveryReward", amount: 200 }],
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  {
+    id: id("grand_plaza"),
+    name: "Grand Plaza",
+    description: "A sweeping plaza at the heart of the realm, where crowds gather for festivals and commerce flows freely. +20 settlement capacity.",
+    cost: 1500,
+    effects: [{ kind: "IncreaseCapacity", amount: 20 }],
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  {
+    id: id("silk_road"),
+    name: "Silk Road",
+    description: "A network of trade routes spanning the known world, carrying silk, spice, and silver into the realm's coffers. +200 Prosperity per hour.",
+    cost: 1800,
+    effects: [{ kind: "IncreasePassiveProsperity", amount: 200 }],
+    availableFromAge: "GoldenAge" as AgeId,
+  },
+  // ── Tier 5 (Age of Legends) ──
+  {
+    id: id("hall_of_heroes"),
+    name: "Hall of Heroes",
+    description: "A vaulted hall lined with the trophies of legendary deeds, inspiring every act of development across the realm. +10 to all active rewards.",
+    cost: 2500,
+    effects: [{ kind: "IncreaseActiveReward", amount: 10 }],
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  {
+    id: id("hanging_gardens"),
+    name: "Hanging Gardens",
+    description: "Terraced gardens cascading with flowers and fountains, whose beauty draws visitors from across the world. +300 Prosperity per hour.",
+    cost: 3000,
+    effects: [{ kind: "IncreasePassiveProsperity", amount: 300 }],
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  {
+    id: id("philosopher_stone"),
+    name: "Philosopher's Stone",
+    description: "A legendary artifact that transmutes base matter into wondrous discoveries, doubling the value of every find. +500 to all discovery rewards.",
+    cost: 3500,
+    effects: [{ kind: "IncreaseDiscoveryReward", amount: 500 }],
+    availableFromAge: "AgeOfLegends" as AgeId,
+  },
+  // ── Tier 6 (Age of Myths) ──
+  {
+    id: id("temple_of_ages"),
+    name: "Temple of Ages",
+    description: "A temple that transcends the ages, where the faithful channel devotion into unending prosperity. +500 Prosperity per hour.",
+    cost: 5000,
+    effects: [{ kind: "IncreasePassiveProsperity", amount: 500 }],
+    availableFromAge: "AgeOfMyths" as AgeId,
+  },
+  {
+    id: id("oracles_sanctum"),
+    name: "Oracle's Sanctum",
+    description: "A sanctum where the oracle reads the threads of fate, bending the flow of prosperity toward the realm. +50% passive income rate.",
+    cost: 6000,
+    effects: [{ kind: "PassiveRateMultiplier", amount: 0.5 }],
+    availableFromAge: "AgeOfMyths" as AgeId,
+  },
+  {
+    id: id("eternal_monument"),
+    name: "Eternal Monument",
+    description: "A monument that will outlast empires, its presence inspiring citizens to feats of legendary ambition. +25 to all active rewards.",
+    cost: 8000,
+    effects: [{ kind: "IncreaseActiveReward", amount: 25 }],
+    availableFromAge: "AgeOfMyths" as AgeId,
+  },
 ];
 
 /**
