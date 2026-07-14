@@ -104,6 +104,31 @@ export const IMPROVEMENTS: readonly Improvement[] = [
     effects: [{ kind: "IncreaseActiveReward", amount: 3 }],
     availableFromAge: "AgeOfGrowth" as AgeId,
   },
+  // ── Tier 3 (Age of Lords) ──
+  {
+    id: id("great_walls"),
+    name: "Great Walls",
+    description: "Massive fortifications surround your cities, protecting your accumulated wealth. +100 Prosperity per hour from secured trade.",
+    cost: 800,
+    effects: [{ kind: "IncreasePassiveProsperity", amount: 100 }],
+    availableFromAge: "AgeOfLords" as AgeId,
+  },
+  {
+    id: id("cathedral"),
+    name: "Cathedral",
+    description: "A towering cathedral inspires devotion and civic pride, doubling the value of every discovery. +150 to all discovery rewards.",
+    cost: 1000,
+    effects: [{ kind: "IncreaseDiscoveryReward", amount: 150 }],
+    availableFromAge: "AgeOfLords" as AgeId,
+  },
+  {
+    id: id("trading_company"),
+    name: "Trading Company",
+    description: "A chartered trading company extends your reach to distant markets, multiplying every action's reward. +5 to all active rewards.",
+    cost: 1200,
+    effects: [{ kind: "IncreaseActiveReward", amount: 5 }],
+    availableFromAge: "AgeOfLords" as AgeId,
+  },
 ];
 
 /**
