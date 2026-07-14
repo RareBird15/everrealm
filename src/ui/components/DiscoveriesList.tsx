@@ -2,7 +2,11 @@
 
 import type { GameState } from "../../engine/state/GameState";
 import type { TechNodeId } from "../../engine/techtree/types";
-import { TECH_NODES, meetsPrerequisites } from "../../engine/techtree/definitions";
+import {
+  TECH_NODES,
+  meetsPrerequisites,
+  isTechAvailableForAge,
+} from "../../engine/techtree/definitions";
 
 interface Props {
   readonly state: GameState;
@@ -14,7 +18,9 @@ export function DiscoveriesList({ state, onUnlock }: Props) {
     state.unlockedTechs.some((u) => u === n.id),
   );
   const available = TECH_NODES.filter(
-    (n) => !state.unlockedTechs.some((u) => u === n.id),
+    (n) =>
+      !state.unlockedTechs.some((u) => u === n.id) &&
+      isTechAvailableForAge(n, state.age),
   );
 
   if (available.length === 0 && unlocked.length === 0) {

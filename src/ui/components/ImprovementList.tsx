@@ -1,7 +1,11 @@
 // src/ui/components/ImprovementList.tsx
 
 import type { GameState } from "../../engine/state/GameState";
-import { IMPROVEMENTS, getImprovement } from "../../engine/improvements/catalog";
+import {
+  IMPROVEMENTS,
+  getImprovement,
+  isImprovementAvailableForAge,
+} from "../../engine/improvements/catalog";
 
 interface Props {
   readonly state: GameState;
@@ -10,7 +14,11 @@ interface Props {
 
 export function ImprovementList({ state, onPurchase }: Props) {
   const purchased = new Set(state.improvements.map((id) => id as string));
-  const available = IMPROVEMENTS.filter((imp) => !purchased.has(imp.id as string));
+  const available = IMPROVEMENTS.filter(
+    (imp) =>
+      !purchased.has(imp.id as string) &&
+      isImprovementAvailableForAge(imp, state.age),
+  );
 
   return (
     <section aria-label="Realm Improvements">
