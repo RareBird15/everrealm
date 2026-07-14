@@ -21,5 +21,11 @@ export type StoryRecord =
       improvementId: ImprovementId;
     }
   | { kind: "CapacityIncreased"; turn: number; newCapacity: number }
-  | { kind: "AgeAdvanced"; turn: number; age: AgeId }
+  | {
+      kind: "AgeAdvanced";
+      turn: number;
+      age: AgeId;
+      newTechsAvailable: import("../techtree/types").TechNodeId[];
+      newImprovementsAvailable: import("../improvements/types").ImprovementId[];
+    }
   | { kind: "TechUnlocked"; turn: number; techId: import("../techtree/types").TechNodeId };

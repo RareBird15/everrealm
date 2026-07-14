@@ -381,6 +381,18 @@ describe("executeCommand — AdvanceAge", () => {
       kind: "AgeAdvanced",
       turn: 1,
       age: "AgeOfGrowth",
+      newTechsAvailable: [
+        "scholarship" as any,
+        "governance" as any,
+        "engineering" as any,
+      ],
+      newImprovementsAvailable: [
+        "grand_library" as any,
+        "colonnade" as any,
+        "royal_mint" as any,
+        "ancient_ruins" as any,
+        "monument" as any,
+      ],
     });
   });
 });

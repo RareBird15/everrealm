@@ -10,7 +10,7 @@ const SAVE_KEY = "everrealm:save";
  */
 function migrateSave(raw: Partial<GameState>): GameState {
   return {
-    version: raw.version ?? 1,
+    version: raw.version ?? 2,
     realmName: raw.realmName ?? "",
     age: raw.age ?? "FoundingAge",
     settlements: raw.settlements ?? [],
@@ -20,7 +20,12 @@ function migrateSave(raw: Partial<GameState>): GameState {
     unlockedTechs: raw.unlockedTechs ?? [],
     lastUpdate: raw.lastUpdate ?? Date.now(),
     discoveredLevels: raw.discoveredLevels ?? [],
-    story: raw.story ?? [],
+    story: (raw.story ?? []).map((r: any) => {
+      if (r.kind === "AgeAdvanced" && !r.newTechsAvailable) {
+        return { ...r, newTechsAvailable: [], newImprovementsAvailable: [] };
+      }
+      return r;
+    }),
     turn: raw.turn ?? 0,
   };
 }

@@ -23,7 +23,14 @@ function storyText(record: StoryRecord): string {
       return `Turn ${record.turn}: Settlement Capacity increased to ${record.newCapacity}.`;
     case "AgeAdvanced": {
       const age = getAge(record.age);
-      return `Turn ${record.turn}: Entered the ${age?.name ?? "new Age"}.`;
+      const ageName = age?.name ?? "new Age";
+      const hasNewContent =
+        record.newTechsAvailable.length > 0 ||
+        record.newImprovementsAvailable.length > 0;
+      if (hasNewContent) {
+        return `Turn ${record.turn}: Welcome to the ${ageName}. New discoveries and improvements are now available.`;
+      }
+      return `Turn ${record.turn}: Welcome to the ${ageName}.`;
     }
     case "TechUnlocked": {
       const tech = getTechNode(record.techId);

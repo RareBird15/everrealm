@@ -2,6 +2,8 @@
 
 import type { GameEvent } from "../events/GameEvent";
 import type { StoryRecord } from "./types";
+import { TECH_NODES } from "../techtree/definitions";
+import { IMPROVEMENTS } from "../improvements/catalog";
 
 /**
  * Derives StoryRecords from a list of GameEvents.
@@ -42,13 +44,22 @@ export function deriveStoryRecords(
           improvementId: event.improvementId,
         });
         break;
-      case "AgeAdvanced":
+      case "AgeAdvanced": {
+        const newTechs = TECH_NODES.filter(
+          (n) => n.availableFromAge === event.toAge,
+        ).map((n) => n.id);
+        const newImprovements = IMPROVEMENTS.filter(
+          (i) => i.availableFromAge === event.toAge,
+        ).map((i) => i.id);
         records.push({
           kind: "AgeAdvanced",
           turn,
           age: event.toAge,
+          newTechsAvailable: newTechs,
+          newImprovementsAvailable: newImprovements,
         });
         break;
+      }
       case "TechUnlocked":
         records.push({
           kind: "TechUnlocked",
