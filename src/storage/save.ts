@@ -1,6 +1,7 @@
 // src/storage/save.ts
 
 import type { GameState } from "../engine/state/GameState";
+import type { StoryRecord } from "../engine/story/types";
 
 const SAVE_KEY = "everrealm:save";
 
@@ -20,11 +21,12 @@ function migrateSave(raw: Partial<GameState>): GameState {
     unlockedTechs: raw.unlockedTechs ?? [],
     lastUpdate: raw.lastUpdate ?? Date.now(),
     discoveredLevels: raw.discoveredLevels ?? [],
-    story: (raw.story ?? []).map((r: any) => {
-      if (r.kind === "AgeAdvanced" && !r.newTechsAvailable) {
-        return { ...r, newTechsAvailable: [], newImprovementsAvailable: [] };
+    story: (raw.story ?? []).map((r) => {
+      const record = r as StoryRecord;
+      if (record.kind === "AgeAdvanced" && !(record as StoryRecord & { newTechsAvailable?: unknown[] }).newTechsAvailable) {
+        return { ...record, newTechsAvailable: [], newImprovementsAvailable: [] } as StoryRecord;
       }
-      return r;
+      return record;
     }),
     turn: raw.turn ?? 0,
   };

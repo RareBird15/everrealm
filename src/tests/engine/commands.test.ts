@@ -7,6 +7,7 @@ import { AGE_ADVANCE_COST } from "../../engine/ages/advance";
 import { findStack } from "../../engine/settlements/stacks";
 import { getImprovement } from "../../engine/improvements/catalog";
 import type { ImprovementId } from "../../engine/improvements/types";
+import type { TechNodeId } from "../../engine/techtree/types";
 
 const NOW = 1_000_000;
 
@@ -382,16 +383,16 @@ describe("executeCommand — AdvanceAge", () => {
       turn: 1,
       age: "AgeOfGrowth",
       newTechsAvailable: [
-        "scholarship" as any,
-        "governance" as any,
-        "engineering" as any,
+        "scholarship" as TechNodeId,
+        "governance" as TechNodeId,
+        "engineering" as TechNodeId,
       ],
       newImprovementsAvailable: [
-        "grand_library" as any,
-        "colonnade" as any,
-        "royal_mint" as any,
-        "ancient_ruins" as any,
-        "monument" as any,
+        "grand_library" as ImprovementId,
+        "colonnade" as ImprovementId,
+        "royal_mint" as ImprovementId,
+        "ancient_ruins" as ImprovementId,
+        "monument" as ImprovementId,
       ],
     });
   });
