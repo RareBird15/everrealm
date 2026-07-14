@@ -20,10 +20,10 @@ import { computePassive, BASE_PASSIVE_RATE_PER_HOUR } from "./prosperity/passive
 import { advanceAge, AGE_ADVANCE_COST } from "./ages/advance";
 
 import { purchaseImprovement } from "./improvements/purchase";
-import { getImprovement } from "./improvements/catalog";
+import { getImprovement, isImprovementAvailableForAge } from "./improvements/catalog";
 import { summarizeEffects } from "./improvements/effects";
 
-import { TECH_NODES, getTechNode, isBuildingUnlocked, meetsPrerequisites } from "./techtree/definitions";
+import { TECH_NODES, getTechNode, isBuildingUnlocked, meetsPrerequisites, isTechAvailableForAge } from "./techtree/definitions";
 
 import { deriveStoryRecords, capacityIncreasedRecord } from "./story/derive";
 import type { StoryRecord } from "./story/types";
@@ -482,6 +482,17 @@ function handlePurchase(
   command: { improvementId: import("./improvements/types").ImprovementId },
   allEvents: GameEvent[],
 ): Result<CommandResult, GameError> {
+  const improvement = getImprovement(command.improvementId);
+  if (!improvement) {
+    return { success: false, error: { type: "ImprovementNotFound", improvementId: command.improvementId } };
+  }
+  if (!isImprovementAvailableForAge(improvement, working.age)) {
+    return {
+      success: false,
+      error: { type: "ImprovementNotAvailableForAge", improvementId: command.improvementId, currentAge: working.age },
+    };
+  }
+
   const purchaseResult = purchaseImprovement(working.improvements, working.prosperity, command.improvementId);
   if (!purchaseResult.success) {
     return purchaseResult;
@@ -559,6 +570,13 @@ function handleUnlockTech(
     return {
       success: false,
       error: { type: "TechNotFound", techId: command.techId },
+    };
+  }
+
+  if (!isTechAvailableForAge(node, working.age)) {
+    return {
+      success: false,
+      error: { type: "TechNotAvailableForAge", techId: command.techId, currentAge: working.age },
     };
   }
 

@@ -32,4 +32,6 @@ export type GameError =
   | { type: "TechAlreadyUnlocked"; techId: import("../techtree/types").TechNodeId }
   | { type: "TechPrerequisitesNotMet"; techId: import("../techtree/types").TechNodeId }
   | { type: "BuildingNotUnlocked"; building: SettlementLevel }
-  | { type: "SourceLevelTooLow"; building: SettlementLevel; sourceLevel: SettlementLevel; minimumLevel: SettlementLevel };
+  | { type: "SourceLevelTooLow"; building: SettlementLevel; sourceLevel: SettlementLevel; minimumLevel: SettlementLevel }
+  | { type: "TechNotAvailableForAge"; techId: import("../techtree/types").TechNodeId; currentAge: AgeId }
+  | { type: "ImprovementNotAvailableForAge"; improvementId: ImprovementId; currentAge: AgeId };
