@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { GameError } from "../../engine/events/GameError";
 import { ESTABLISH_COST } from "../../engine/settlements/establish";
 import { AGE_ADVANCE_COST } from "../../engine/ages/advance";
+import { getAge } from "../../engine/ages/definitions";
 
 interface Props {
   readonly canEstablish: boolean;
@@ -41,6 +42,13 @@ function errorText(error: GameError): string {
       return `${error.building} has not been unlocked yet.`;
     case "SourceLevelTooLow":
       return `${error.building} requires at least ${error.minimumLevel}s to build (you used ${error.sourceLevel}s).`;
+    case "TechNotAvailableForAge": {
+      const age = getAge(error.currentAge);
+      return `This discovery is not yet available. Advance to a new Age to unlock it.`;
+    }
+    case "ImprovementNotAvailableForAge": {
+      return `This improvement is not yet available. Advance to a new Age to unlock it.`;
+    }
   }
 }
 
