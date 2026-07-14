@@ -29,6 +29,9 @@ export const SPECIAL_BUILDINGS: readonly SpecialBuilding[] = [
   "Library",
   "TownHall",
   "Aqueduct",
+  "Shrine",
+  "Bank",
+  "Apothecary",
 ];
 
 /** Returns true if `level` is a special building (not on the standard ladder). */

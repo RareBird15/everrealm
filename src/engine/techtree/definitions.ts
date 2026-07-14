@@ -12,6 +12,9 @@ export const TECH_TIER1_COST = 50;
 /** Cost per Tier 2 tech tree node. */
 export const TECH_TIER2_COST = 200;
 
+/** Cost per Tier 3 tech tree node. */
+export const TECH_TIER3_COST = 500;
+
 // ── Tier 1 tech tree nodes ──
 
 export const TECH_NODES: readonly TechNode[] = [
@@ -105,6 +108,52 @@ export const TECH_NODES: readonly TechNode[] = [
     requires: ["agriculture" as TechNodeId, "trade" as TechNodeId, "crafts" as TechNodeId],
     minimumSourceLevel: "Town",
     availableFromAge: "AgeOfGrowth" as AgeId,
+  },
+  // ── Tier 3 ──
+  {
+    id: "masonry" as TechNodeId,
+    name: "Masonry",
+    description: "Master stonemasons raise shrines that endure for centuries, channeling the realm's devotion into tangible blessing. Unlocks Shrine buildings.",
+    tier: 3,
+    cost: TECH_TIER3_COST,
+    unlocksBuilding: "Shrine",
+    buildingEffects: [
+      { kind: "DiscoveryBonusPer", amount: 50 },
+    ],
+    buildingDescription: "Each Shrine adds +50 to each discovery reward for each Shrine in the realm. Requires at least Towns to build.",
+    requires: ["scholarship" as TechNodeId, "governance" as TechNodeId, "engineering" as TechNodeId],
+    minimumSourceLevel: "Town",
+    availableFromAge: "AgeOfLords" as AgeId,
+  },
+  {
+    id: "banking" as TechNodeId,
+    name: "Banking",
+    description: "A network of treasuries and lenders multiplies the realm's productivity, turning stored wealth into new growth. Unlocks Bank buildings.",
+    tier: 3,
+    cost: TECH_TIER3_COST,
+    unlocksBuilding: "Bank",
+    buildingEffects: [
+      { kind: "PassiveRateMultiplierPer", amount: 0.08 },
+    ],
+    buildingDescription: "Each Bank increases the base passive income rate by 8%. Requires at least Cities to build.",
+    requires: ["scholarship" as TechNodeId, "governance" as TechNodeId, "engineering" as TechNodeId],
+    minimumSourceLevel: "City",
+    availableFromAge: "AgeOfLords" as AgeId,
+  },
+  {
+    id: "medicine" as TechNodeId,
+    name: "Medicine",
+    description: "Apothecaries distill remedies that sustain larger populations, easing the burdens of crowding and disease. Unlocks Apothecary buildings.",
+    tier: 3,
+    cost: TECH_TIER3_COST,
+    unlocksBuilding: "Apothecary",
+    buildingEffects: [
+      { kind: "CapacityPerBuilding", amount: 2 },
+    ],
+    buildingDescription: "Each Apothecary adds +2 to settlement capacity. Requires at least Manors to build.",
+    requires: ["scholarship" as TechNodeId, "governance" as TechNodeId, "engineering" as TechNodeId],
+    minimumSourceLevel: "Manor",
+    availableFromAge: "AgeOfLords" as AgeId,
   },
 ];
 

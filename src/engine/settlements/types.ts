@@ -22,7 +22,10 @@ export type SpecialBuilding =
   | "Workshop"
   | "Library"
   | "TownHall"
-  | "Aqueduct";
+  | "Aqueduct"
+  | "Shrine"
+  | "Bank"
+  | "Apothecary";
 
 /** All possible settlement types. */
 export type SettlementLevel = StandardLevel | SpecialBuilding;

@@ -161,11 +161,17 @@ export function ActionBar({
           <dd>Develop into Town Hall</dd>
           <dt>Q</dt>
           <dd>Develop into Aqueduct</dd>
+          <dt>S</dt>
+          <dd>Develop into Shrine</dd>
+          <dt>B</dt>
+          <dd>Develop into Bank</dd>
+          <dt>P</dt>
+          <dd>Develop into Apothecary</dd>
         </dl>
         <p className="form-help">
           Shortcuts develop the first eligible stack. Standard level shortcuts
           (T through I) develop that level using the default progression path.
-          Special building shortcuts (F, M, O, L, G, Q) develop the first
+          Special building shortcuts (F, M, O, L, G, Q, S, B, P) develop the first
           available standard level stack into that building. Shortcuts work
           except when typing in a text field.
         </p>

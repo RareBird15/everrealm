@@ -28,7 +28,8 @@ interface Props {
  *   Tent=t, Hut=h, Cottage=c, House=u (hoUse), Manor=n (maNor),
  *   Village=v, Town=w (toWn), City=i (cIty), Citadel=d (citiDel).
  * Special buildings: Farm=f, Market=m, Workshop=o (wOrkshop),
- *   Library=l, TownHall=g (governance building), Aqueduct=q (aQueduct).
+ *   Library=l, TownHall=g (governance building), Aqueduct=q (aQueduct),
+ *   Shrine=s, Bank=b, Apothecary=p (aPotheCary).
  */
 const DEVELOP_SHORTCUTS: Record<string, SettlementLevel> = {
   t: "Tent",
@@ -46,6 +47,9 @@ const DEVELOP_SHORTCUTS: Record<string, SettlementLevel> = {
   l: "Library",
   g: "TownHall",
   q: "Aqueduct",
+  s: "Shrine",
+  b: "Bank",
+  p: "Apothecary",
 };
 
 /**
@@ -169,7 +173,7 @@ function developFirstEligible(game: GameApi, level: SettlementLevel): void {
     return;
   }
 
-  const isSpecial = ["Farm", "Market", "Workshop", "Library", "TownHall", "Aqueduct"].includes(level);
+  const isSpecial = ["Farm", "Market", "Workshop", "Library", "TownHall", "Aqueduct", "Shrine", "Bank", "Apothecary"].includes(level);
 
   if (isSpecial) {
     const tech = getTechForBuilding(level);
@@ -181,7 +185,7 @@ function developFirstEligible(game: GameApi, level: SettlementLevel): void {
       (s) => {
         if (s.quantity < 2) return false;
         if (["Citadel"].includes(s.level)) return false;
-        if (["Farm", "Market", "Workshop", "Library", "TownHall", "Aqueduct"].includes(s.level)) return false;
+        if (["Farm", "Market", "Workshop", "Library", "TownHall", "Aqueduct", "Shrine", "Bank", "Apothecary"].includes(s.level)) return false;
         const sourceIdx = levelIndex(s.level as StandardLevel);
         return sourceIdx >= minIdx;
       },

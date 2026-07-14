@@ -80,14 +80,16 @@ function specialBuildingPassiveBonus(state: GameState): number {
 }
 
 /**
- * Computes the passive rate multiplier from Aqueducts.
- * Each Aqueduct adds 5% (0.05) multiplicatively, so 2 Aqueducts = 1.10x.
+ * Computes the passive rate multiplier from special buildings with
+ * PassiveRateMultiplierPer effects (e.g. Aqueducts +5%, Banks +8%).
+ * Each building adds its percentage to the base rate multiplicatively,
+ * so 2 Aqueducts = 1.10x, 1 Bank = 1.08x, etc.
  */
 function specialBuildingPassiveMultiplier(state: GameState): number {
   let multiplier = 1;
   for (const stack of state.settlements) {
-    if (stack.level === "Aqueduct") {
-      const tech = getTechForBuilding("Aqueduct");
+    if (isSpecialBuilding(stack.level)) {
+      const tech = getTechForBuilding(stack.level);
       if (tech) {
         for (const effect of tech.buildingEffects) {
           if (effect.kind === "PassiveRateMultiplierPer") {
@@ -101,13 +103,14 @@ function specialBuildingPassiveMultiplier(state: GameState): number {
 }
 
 /**
- * Sums the discovery bonus from all Library buildings.
+ * Sums the discovery bonus from all special buildings with
+ * DiscoveryBonusPer effects (e.g. Libraries +25, Shrines +50).
  */
 function specialBuildingDiscoveryBonus(state: GameState): number {
   let bonus = 0;
   for (const stack of state.settlements) {
-    if (stack.level === "Library") {
-      const tech = getTechForBuilding("Library");
+    if (isSpecialBuilding(stack.level)) {
+      const tech = getTechForBuilding(stack.level);
       if (tech) {
         for (const effect of tech.buildingEffects) {
           if (effect.kind === "DiscoveryBonusPer") {
@@ -121,13 +124,14 @@ function specialBuildingDiscoveryBonus(state: GameState): number {
 }
 
 /**
- * Sums the capacity bonus from all Town Hall buildings.
+ * Sums the capacity bonus from all special buildings with
+ * CapacityPerBuilding effects (e.g. Town Halls +1, Apothecaries +2).
  */
 function specialBuildingCapacityBonus(state: GameState): number {
   let bonus = 0;
   for (const stack of state.settlements) {
-    if (stack.level === "TownHall") {
-      const tech = getTechForBuilding("TownHall");
+    if (isSpecialBuilding(stack.level)) {
+      const tech = getTechForBuilding(stack.level);
       if (tech) {
         for (const effect of tech.buildingEffects) {
           if (effect.kind === "CapacityPerBuilding") {

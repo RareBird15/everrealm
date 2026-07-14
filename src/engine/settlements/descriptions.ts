@@ -28,6 +28,9 @@ export const SETTLEMENT_DESCRIPTIONS: Readonly<Record<SettlementLevel, string>> 
   Library: "Towering shelves of scrolls and codices, where scholars preserve the realm's accumulated knowledge for future generations.",
   TownHall: "A sturdy civic building where administrators coordinate the business of governance and keep the realm running smoothly.",
   Aqueduct: "Arched stone channels that carry fresh water across miles of countryside, turning dry ground into productive land.",
+  Shrine: "A sacred enclosure where the realm honors the old powers. Incense drifts skyward and the faithful leave offerings at the stone altar.",
+  Bank: "A fortified treasury where the realm's wealth is stored and lent. Ledgers track every coin, and vault doors stand thick as castle walls.",
+  Apothecary: "A workshop of remedies and tinctures, where dried herbs hang from the rafters and the apothecary measures cures by the drop.",
 };
 
 /**
