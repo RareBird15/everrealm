@@ -49,6 +49,11 @@ function announceRecord(record: StoryRecord): string {
   switch (record.kind) {
     case "SettlementEstablished":
       return `Turn ${record.turn}: Created ${record.level}.`;
+    case "SettlementDeveloped":
+      if (record.source === "ChainReaction") {
+        return `Turn ${record.turn}: Chain reaction — created ${record.toLevel}.`;
+      }
+      return `Turn ${record.turn}: Created ${record.toLevel}.`;
     case "SettlementLevelDiscovered":
       return `Turn ${record.turn}: Discovered ${record.level}.`;
     case "ImprovementPurchased": {

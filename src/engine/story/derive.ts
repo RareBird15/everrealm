@@ -30,6 +30,15 @@ export function deriveStoryRecords(
           level: event.level,
         });
         break;
+      case "SettlementDeveloped":
+        records.push({
+          kind: "SettlementDeveloped",
+          turn,
+          fromLevel: event.level,
+          toLevel: event.newLevel,
+          source: event.source,
+        });
+        break;
       case "SettlementLevelDiscovered":
         records.push({
           kind: "SettlementLevelDiscovered",

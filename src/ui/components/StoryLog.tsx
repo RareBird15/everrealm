@@ -13,6 +13,11 @@ function storyText(record: StoryRecord): string {
   switch (record.kind) {
     case "SettlementEstablished":
       return `Turn ${record.turn}: Established a ${record.level}.`;
+    case "SettlementDeveloped":
+      if (record.source === "ChainReaction") {
+        return `Turn ${record.turn}: Chain reaction created a ${record.toLevel}.`;
+      }
+      return `Turn ${record.turn}: Developed ${record.fromLevel} into ${record.toLevel}.`;
     case "SettlementLevelDiscovered":
       return `Turn ${record.turn}: Discovered the ${record.level}.`;
     case "ImprovementPurchased": {

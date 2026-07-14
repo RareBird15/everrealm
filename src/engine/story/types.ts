@@ -11,6 +11,13 @@ export type StoryRecord =
       level: SettlementLevel;
     }
   | {
+      kind: "SettlementDeveloped";
+      turn: number;
+      fromLevel: SettlementLevel;
+      toLevel: SettlementLevel;
+      source: "Player" | "ChainReaction";
+    }
+  | {
       kind: "SettlementLevelDiscovered";
       turn: number;
       level: SettlementLevel;
