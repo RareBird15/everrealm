@@ -44,7 +44,8 @@ function errorText(error: GameError): string {
       return `${error.building} requires at least ${error.minimumLevel}s to build (you used ${error.sourceLevel}s).`;
     case "TechNotAvailableForAge": {
       const age = getAge(error.currentAge);
-      return `This discovery is not yet available. Advance to a new Age to unlock it.`;
+      const ageName = age?.name ?? "a later Age";
+      return `This discovery is not yet available. Advance beyond the ${ageName} to unlock it.`;
     }
     case "ImprovementNotAvailableForAge": {
       return `This improvement is not yet available. Advance to a new Age to unlock it.`;
