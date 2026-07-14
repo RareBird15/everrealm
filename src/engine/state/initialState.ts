@@ -28,7 +28,7 @@ export const STARTING_PROSPERITY = 30;
  */
 export function initialState(realmName: string, now: number): GameState {
   return {
-    version: 1,
+    version: 2,
     realmName,
     age: "FoundingAge" as AgeId,
     settlements: [],

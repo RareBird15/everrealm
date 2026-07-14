@@ -34,9 +34,9 @@ describe("initialState", () => {
     expect(state.lastUpdate).toBe(12345);
   });
 
-  it("creates a state with version 1", () => {
+  it("creates a state with version 2", () => {
     const state = initialState("Elderglen", 0);
-    expect(state.version).toBe(1);
+    expect(state.version).toBe(2);
   });
 
   it("creates a state with turn 0", () => {
