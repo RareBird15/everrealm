@@ -33,7 +33,7 @@ function getBuildingDescription(building: SpecialBuilding): string {
 }
 
 export function BatchActions({ game }: Props) {
-  const { state, specializeSettlement, unspecializeSettlement } = game;
+  const { state, batchSpecialize, batchUnspecialize } = game;
   const [mode, setMode] = useState<"none" | "specialize" | "unspecialize">("none");
   const [selectedBuilding, setSelectedBuilding] = useState<SpecialBuilding | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -50,24 +50,14 @@ export function BatchActions({ game }: Props) {
 
   function doBatchSpecialize() {
     if (!selectedBuilding) return;
-    const targets = state.settlements
-      .filter((s) => s.specialization === null)
-      .slice(0, maxSpecialize);
-    for (const s of targets) {
-      specializeSettlement(s.id, selectedBuilding);
-    }
+    batchSpecialize(selectedBuilding, maxSpecialize);
     setMode("none");
     setSelectedBuilding(null);
     setQuantity(1);
   }
 
   function doBatchUnspecialize() {
-    const targets = state.settlements
-      .filter((s) => s.specialization !== null)
-      .slice(0, maxUnspecialize);
-    for (const s of targets) {
-      unspecializeSettlement(s.id);
-    }
+    batchUnspecialize(maxUnspecialize);
     setMode("none");
     setQuantity(1);
   }

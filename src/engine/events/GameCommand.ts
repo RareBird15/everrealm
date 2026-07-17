@@ -25,6 +25,8 @@ export type GameCommand =
       building: SpecialBuilding;
     }
   | { type: "UnspecializeSettlement"; settlementId: string }
+  | { type: "BatchSpecialize"; building: SpecialBuilding; count: number }
+  | { type: "BatchUnspecialize"; count: number }
   | { type: "BuyLand" }
   | { type: "PurchaseImprovement"; improvementId: ImprovementId }
   | { type: "AdvanceAge" }

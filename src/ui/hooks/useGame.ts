@@ -43,6 +43,8 @@ export interface GameApi {
   readonly researchUpgrade: (researchId: ResearchId) => void;
   readonly specializeSettlement: (settlementId: string, building: SpecialBuilding) => void;
   readonly unspecializeSettlement: (settlementId: string) => void;
+  readonly batchSpecialize: (building: SpecialBuilding, count: number) => void;
+  readonly batchUnspecialize: (count: number) => void;
   readonly buyLand: () => void;
   readonly advanceAge: () => void;
   readonly ascend: (legacy: LegacyId) => void;
@@ -136,6 +138,20 @@ export function useGame(): GameApi {
     [dispatch],
   );
 
+  const batchSpecialize = useCallback(
+    (building: SpecialBuilding, count: number) => {
+      dispatch({ type: "BatchSpecialize", building, count });
+    },
+    [dispatch],
+  );
+
+  const batchUnspecialize = useCallback(
+    (count: number) => {
+      dispatch({ type: "BatchUnspecialize", count });
+    },
+    [dispatch],
+  );
+
   const buyLand = useCallback(() => {
     dispatch({ type: "BuyLand" });
   }, [dispatch]);
@@ -198,6 +214,8 @@ export function useGame(): GameApi {
     researchUpgrade,
     specializeSettlement,
     unspecializeSettlement,
+    batchSpecialize,
+    batchUnspecialize,
     buyLand,
     advanceAge,
     ascend,

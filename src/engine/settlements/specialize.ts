@@ -72,9 +72,6 @@ export function canSpecialize(
  * Unspecializes a settlement: returns it to the upgrade ladder at its
  * current tier. The player loses the building's bonuses but gains the
  * ability to upgrade the settlement when the next tier research is done.
- *
- * This gives players a meaningful action when they're stuck — they can
- * restructure their realm without waiting.
  */
 export function unspecializeSettlement(
   state: GameState,
@@ -103,5 +100,89 @@ export function unspecializeSettlement(
         building: settlement.specialization,
       },
     ],
+  };
+}
+
+/**
+ * Batch specializes multiple unspecialized settlements as the same building.
+ * Only affects unspecialized settlements (at current base tier).
+ * Uses a single state transition so all specializations happen atomically.
+ */
+export function batchSpecialize(
+  state: GameState,
+  building: SpecialBuilding,
+  count: number,
+): { state: GameState; events: GameEvent[] } {
+  // Verify the player has unlocked this building type
+  const hasResearch = state.completedResearch.some((r) => {
+    const node = getResearch(r);
+    return node?.unlocksBuilding === building;
+  });
+  if (!hasResearch)
+    throw new Error(`You have not unlocked ${building} yet. Research it first.`);
+
+  const targets = state.settlements
+    .filter((s) => s.specialization === null)
+    .slice(0, count);
+
+  if (targets.length === 0)
+    throw new Error("No unspecialized settlements available.");
+
+  const targetIds = new Set(targets.map((s) => s.id));
+  const newSettlements = state.settlements.map((s) =>
+    targetIds.has(s.id) ? { ...s, specialization: building } : s,
+  );
+
+  const events: GameEvent[] = targets.map((s) => ({
+    type: "SettlementSpecialized" as const,
+    turn: state.turn + 1,
+    settlementId: s.id,
+    building,
+  }));
+
+  return {
+    state: {
+      ...state,
+      settlements: newSettlements,
+      turn: state.turn + 1,
+    },
+    events,
+  };
+}
+
+/**
+ * Batch unspecializes multiple specialized settlements.
+ * Returns them to the upgrade ladder at their current tier.
+ */
+export function batchUnspecialize(
+  state: GameState,
+  count: number,
+): { state: GameState; events: GameEvent[] } {
+  const targets = state.settlements
+    .filter((s) => s.specialization !== null)
+    .slice(0, count);
+
+  if (targets.length === 0)
+    throw new Error("No specialized settlements available.");
+
+  const targetIds = new Set(targets.map((s) => s.id));
+  const newSettlements = state.settlements.map((s) =>
+    targetIds.has(s.id) ? { ...s, specialization: null } : s,
+  );
+
+  const events: GameEvent[] = targets.map((s) => ({
+    type: "SettlementSpecialized" as const,
+    turn: state.turn + 1,
+    settlementId: s.id,
+    building: s.specialization!,
+  }));
+
+  return {
+    state: {
+      ...state,
+      settlements: newSettlements,
+      turn: state.turn + 1,
+    },
+    events,
   };
 }

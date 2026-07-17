@@ -5,7 +5,7 @@ import type { GameCommand } from "./events/GameCommand";
 import type { GameEvent } from "./events/GameEvent";
 import { establishSettlement } from "./settlements/establish";
 import { doResearch } from "./research/researchAction";
-import { specializeSettlement, unspecializeSettlement } from "./settlements/specialize";
+import { specializeSettlement, unspecializeSettlement, batchSpecialize, batchUnspecialize } from "./settlements/specialize";
 import { buyLand } from "./land/buyLand";
 import { advanceAge } from "./ages/advance";
 import { ascend } from "./prestige/ascend";
@@ -48,6 +48,14 @@ export function reducer(state: GameState, command: GameCommand): {
 
       case "UnspecializeSettlement":
         result = unspecializeSettlement(withPassive, command.settlementId);
+        break;
+
+      case "BatchSpecialize":
+        result = batchSpecialize(withPassive, command.building, command.count);
+        break;
+
+      case "BatchUnspecialize":
+        result = batchUnspecialize(withPassive, command.count);
         break;
 
       case "BuyLand":
