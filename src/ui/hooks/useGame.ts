@@ -3,25 +3,26 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import type { GameState } from "../../engine/state/GameState";
 import type { GameCommand } from "../../engine/events/GameCommand";
-import type { GameError } from "../../engine/events/GameError";
 import type { GameEvent } from "../../engine/events/GameEvent";
-import type { Result } from "../../shared/types";
-import type { SettlementLevel } from "../../engine/settlements/types";
-import type { TechNodeId } from "../../engine/techtree/types";
-import { initialState } from "../../engine/state/initialState";
-import { executeCommand, reconcileTime, effectivePassiveRate, type CommandResult } from "../../engine/commands";
+import type { ResearchId } from "../../engine/research/types";
+import type { SpecialBuilding } from "../../engine/settlements/types";
+import type { LegacyId } from "../../engine/prestige/types";
+import { createInitialState } from "../../engine/state/initialState";
+import { reducer } from "../../engine/reducer";
 import { saveGame, loadGame, deleteSave } from "../../storage/save";
-import { ESTABLISH_COST } from "../../engine/settlements/establish";
-import { canAccommodate } from "../../engine/settlements/capacity";
-import { getImprovement } from "../../engine/improvements/catalog";
-import { summarizeEffects } from "../../engine/improvements/effects";
-import { findStack } from "../../engine/settlements/stacks";
+import { canEstablish, establishCost, countSpecialized } from "../../engine/settlements/establish";
+import { canResearch, researchCost } from "../../engine/research/researchAction";
+import { canBuyLand, landCost } from "../../engine/land/buyLand";
+import { canAscend } from "../../engine/prestige/ascend";
+import { canAdvanceAge } from "../../engine/research/definitions";
+import { passiveRatePerHour, applyPassiveCacao, calculatePassiveCacao, cacaoPerTurn } from "../../engine/cacao/passive";
 import { isFinalAge } from "../../engine/ages/definitions";
-import { AGE_ADVANCE_COST } from "../../engine/ages/advance";
+import { getResearch, researchForAge, ALL_RESEARCH } from "../../engine/research/definitions";
+import { effectiveLandParcels } from "../../engine/state/initialState";
 
 export interface GameApi {
   readonly state: GameState;
-  readonly error: GameError | null;
+  readonly error: string | null;
   readonly dismissError: () => void;
   readonly needsRealmName: boolean;
   readonly offlineEarnings: number | null;
@@ -30,35 +31,28 @@ export interface GameApi {
   // Derived state
   readonly canEstablish: boolean;
   readonly canAdvanceAge: boolean;
-  readonly effectiveCapacity: number;
-  readonly passiveRatePerHour: number;
+  readonly canBuyLandFlag: boolean;
+  readonly canAscendFlag: boolean;
+  readonly passiveRate: number;
+  readonly turnRate: number;
+  readonly landUsed: number;
+  readonly landTotal: number;
 
   // Actions
   readonly setRealmName: (name: string) => void;
   readonly establishSettlement: () => void;
-  readonly developSettlement: (age: GameState["age"], level: SettlementLevel, target?: SettlementLevel) => void;
-  readonly purchaseImprovement: (improvementId: string) => void;
+  readonly researchUpgrade: (researchId: ResearchId) => void;
+  readonly specializeSettlement: (settlementId: string, building: SpecialBuilding) => void;
+  readonly unspecializeSettlement: (settlementId: string) => void;
+  readonly buyLand: () => void;
   readonly advanceAge: () => void;
-  readonly unlockTech: (techId: TechNodeId) => void;
+  readonly ascend: (legacy: LegacyId) => void;
   readonly resetGame: () => void;
-}
 
-function computeEffectiveCapacity(state: GameState): number {
-  let capacity = state.capacity;
-  for (const id of state.improvements) {
-    const imp = getImprovement(id);
-    if (imp) {
-      capacity += summarizeEffects(imp.effects).capacityBonus;
-    }
-  }
-  // Town Hall capacity bonus is handled by engine's effectiveCapacity,
-  // but we replicate it here for the UI's derived value.
-  for (const stack of state.settlements) {
-    if (stack.level === "TownHall") {
-      capacity += stack.quantity;
-    }
-  }
-  return capacity;
+  // Research info
+  readonly availableResearch: typeof ALL_RESEARCH;
+  readonly establishCostNow: number;
+  readonly landCostNow: number;
 }
 
 export function useGame(): GameApi {
@@ -66,114 +60,94 @@ export function useGame(): GameApi {
   const hasSave = savedState.current !== null;
 
   const [state, setState] = useState<GameState>(() => {
-    if (hasSave) {
-      return savedState.current!;
-    }
-    // No save — start with empty state, realm name set later
-    return initialState("", Date.now());
+    if (hasSave) return savedState.current!;
+    return createInitialState("");
   });
-  const [error, setError] = useState<GameError | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [offlineEarnings, setOfflineEarnings] = useState<number | null>(null);
   const stateRef = useRef(state);
   stateRef.current = state;
 
-  // Save on every state change (skip empty realm name — before setup)
+  // Save on every state change
   useEffect(() => {
-    if (state.realmName) {
-      saveGame(state);
-    }
+    if (state.realmName) saveGame(state);
   }, [state]);
 
-  // Reconcile passive time on mount — only for existing saves
+  // Apply passive cacao on mount for existing saves
   useEffect(() => {
     if (!hasSave) return;
     const current = stateRef.current;
-    const result = reconcileTime(current, Date.now());
-    if (result.success && result.value.events.length > 0) {
-      setState(result.value.state);
-      // Extract passive amount for the "while you were away" banner
-      const passiveAmount = result.value.events
-        .filter((e: GameEvent) => e.type === "PassiveProsperityApplied")
-        .reduce((sum: number, e: GameEvent) => {
-          return e.type === "PassiveProsperityApplied" ? sum + e.amount : sum;
-        }, 0);
-      if (passiveAmount > 0) {
-        setOfflineEarnings(passiveAmount);
-      }
+    const earned = calculatePassiveCacao(current);
+    if (earned > 0) {
+      const { state: newState } = applyPassiveCacao(current);
+      setState(newState);
+      setOfflineEarnings(earned);
     }
-    // Only run once on mount
   }, []);
 
-  // Periodic passive prosperity tick
-  // Base rate is 120/hour (2/min), so a 30s interval yields ~1 prosperity
-  // per tick at base rate. computePassive preserves sub-unit time, so
-  // shorter intervals don't lose fractional accrual.
+  // Periodic passive cacao tick
   useEffect(() => {
     const TICK_MS = 30_000;
     const interval = setInterval(() => {
       const current = stateRef.current;
-      const result = reconcileTime(current, Date.now());
-      if (result.success && result.value.events.length > 0) {
-        setState(result.value.state);
-      }
+      const { state: newState, events } = applyPassiveCacao(current);
+      if (events.length > 0) setState(newState);
     }, TICK_MS);
     return () => clearInterval(interval);
   }, []);
 
-  const dispatch = useCallback(
-    (command: GameCommand): boolean => {
-      const current = stateRef.current;
-      const result: Result<CommandResult, GameError> = executeCommand(
-        current,
-        command,
-        Date.now(),
-      );
+  const dispatch = useCallback((command: GameCommand): boolean => {
+    const current = stateRef.current;
+    const { state: newState, events } = reducer(current, command);
 
-      if (!result.success) {
-        setError(result.error);
-        return false;
-      }
+    // Check for error events
+    const errorEvent = events.find((e) => e.type === "Error");
+    if (errorEvent && errorEvent.type === "Error") {
+      setError(errorEvent.message);
+      return false;
+    }
 
-      setError(null);
-      // Type narrowing: we know result.success is true here
-      const successResult = result as { success: true; value: CommandResult };
-      setState(successResult.value.state);
-      return true;
-    },
-    [],
-  );
+    setError(null);
+    setState(newState);
+    return true;
+  }, []);
 
   const establishSettlement = useCallback(() => {
     dispatch({ type: "EstablishSettlement" });
   }, [dispatch]);
 
-  const developSettlement = useCallback(
-    (age: GameState["age"], level: SettlementLevel, target?: SettlementLevel) => {
-      const cmd: GameCommand = target !== undefined
-        ? { type: "DevelopSettlement", age, level, target }
-        : { type: "DevelopSettlement", age, level };
-      dispatch(cmd);
+  const researchUpgrade = useCallback(
+    (researchId: ResearchId) => {
+      dispatch({ type: "ResearchUpgrade", researchId });
     },
     [dispatch],
   );
 
-  const purchaseImprovement = useCallback(
-    (improvementId: string) => {
-      dispatch({
-        type: "PurchaseImprovement",
-        improvementId: improvementId as never,
-      });
+  const specializeSettlement = useCallback(
+    (settlementId: string, building: SpecialBuilding) => {
+      dispatch({ type: "SpecializeSettlement", settlementId, building });
     },
     [dispatch],
   );
+
+  const unspecializeSettlement = useCallback(
+    (settlementId: string) => {
+      dispatch({ type: "UnspecializeSettlement", settlementId });
+    },
+    [dispatch],
+  );
+
+  const buyLand = useCallback(() => {
+    dispatch({ type: "BuyLand" });
+  }, [dispatch]);
 
   const advanceAge = useCallback(() => {
     dispatch({ type: "AdvanceAge" });
-  }, []);
+  }, [dispatch]);
 
-  const unlockTech = useCallback(
-    (techId: TechNodeId) => {
-      dispatch({ type: "UnlockTech", techId });
+  const ascend = useCallback(
+    (legacy: LegacyId) => {
+      dispatch({ type: "Ascend", legacy });
     },
     [dispatch],
   );
@@ -184,7 +158,7 @@ export function useGame(): GameApi {
 
   const resetGame = useCallback(() => {
     deleteSave();
-    setState(initialState("", Date.now()));
+    setState(createInitialState(""));
     setError(null);
     setOfflineEarnings(null);
   }, []);
@@ -193,18 +167,17 @@ export function useGame(): GameApi {
   const dismissOfflineEarnings = useCallback(() => setOfflineEarnings(null), []);
 
   // Derived state
-  const effectiveCapacity = computeEffectiveCapacity(state);
-  const passiveRatePerHour = effectivePassiveRate(state);
-  const canEstablish =
-    state.prosperity >= ESTABLISH_COST &&
-    canAccommodate(state.settlements, effectiveCapacity);
+  const passiveRate = passiveRatePerHour(state);
+  const turnRate = cacaoPerTurn(state);
+  const landUsed = state.settlements.length;
+  const landTotal = effectiveLandParcels(state);
+  const establishCostNow = establishCost(state);
+  const landCostNow = landCost(state);
 
-  const citadelCount =
-    findStack(state.settlements, state.age, "Citadel")?.quantity ?? 0;
-  const canAdvanceAge =
-    !isFinalAge(state.age) &&
-    citadelCount >= 2 &&
-    state.prosperity >= AGE_ADVANCE_COST;
+  // Available research for current Age (not yet completed, prereqs met)
+  const availableResearch = ALL_RESEARCH.filter((r) =>
+    canResearch(state, r.id),
+  );
 
   return {
     state,
@@ -213,16 +186,25 @@ export function useGame(): GameApi {
     needsRealmName: !state.realmName,
     offlineEarnings,
     dismissOfflineEarnings,
-    canEstablish,
-    canAdvanceAge,
-    effectiveCapacity,
-    passiveRatePerHour,
+    canEstablish: canEstablish(state),
+    canAdvanceAge: !isFinalAge(state.age) && canAdvanceAge(state.age, state.completedResearch),
+    canBuyLandFlag: canBuyLand(state),
+    canAscendFlag: canAscend(state),
+    passiveRate,
+    turnRate,
+    landUsed,
+    landTotal,
     setRealmName,
     establishSettlement,
-    developSettlement,
-    purchaseImprovement,
+    researchUpgrade,
+    specializeSettlement,
+    unspecializeSettlement,
+    buyLand,
     advanceAge,
-    unlockTech,
+    ascend,
     resetGame,
+    availableResearch,
+    establishCostNow,
+    landCostNow,
   };
 }

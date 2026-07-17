@@ -1,39 +1,63 @@
 // src/engine/state/GameState.ts
 
 import type { AgeId } from "../ages/types";
-import type { SettlementStack, SettlementLevel } from "../settlements/types";
-import type { Prosperity } from "../prosperity/types";
+import type { Cacao } from "../cacao/types";
+import type { Settlement } from "../settlements/types";
+import type { ResearchId } from "../research/types";
 import type { ImprovementId } from "../improvements/types";
 import type { StoryRecord } from "../story/types";
+import type { PrestigeState } from "../prestige/types";
 
+/**
+ * The complete game state for Everrealm v0.3.
+ *
+ * Key changes from v0.2.x:
+ * - Settlements are individual entities (not stacks for merging)
+ * - Capacity replaced by landParcels (physical, expandable)
+ * - Prosperity renamed to Cacao
+ * - unlockedTechs renamed to completedResearch
+ * - Prestige state added
+ * - baseTier tracks the current settlement tier from research
+ */
 export interface GameState {
   readonly version: number;
   readonly realmName: string;
   readonly age: AgeId;
 
-  /** Settlements grouped as stacks, keyed by (age, level). */
-  readonly settlements: readonly SettlementStack[];
+  /** Individual settlements, each on its own land parcel. */
+  readonly settlements: readonly Settlement[];
 
+  /** Realm improvements purchased. */
   readonly improvements: readonly ImprovementId[];
-  readonly prosperity: Prosperity;
-  readonly capacity: number;
 
-  /** Tech tree nodes unlocked by the player (permanent across Ages). */
-  readonly unlockedTechs: readonly (import("../techtree/types").TechNodeId)[];
+  /** Cacao currency — earned passively and through actions. */
+  readonly cacao: Cacao;
 
-  /** Unix timestamp (ms) for passive prosperity calculation. */
-  readonly lastUpdate: number;
+  /** Land parcels — each settlement occupies one. Expandable through research. */
+  readonly landParcels: number;
 
   /**
-   * Settlement levels discovered globally across the realm.
-   * Not per-Age — if a level is discovered in one Age, it is discovered
-   * in all Ages.
+   * Research completed by the player.
+   * Settlement upgrades and specializations are permanent across Ages.
    */
-  readonly discoveredLevels: readonly SettlementLevel[];
+  readonly completedResearch: readonly ResearchId[];
 
-  /** Story records — structured, derived from events, not prose. */
+  /**
+   * The current base tier for new settlements.
+   * Determined by how many settlement upgrade researches the player has completed.
+   * New settlements are always established at this tier.
+   */
+  readonly baseTier: import("../settlements/types").StandardLevel;
+
+  /** Story records — structured, derived from events. */
   readonly story: readonly StoryRecord[];
 
   /** Increments per player action. */
   readonly turn: number;
+
+  /** Unix timestamp (ms) for passive cacao calculation. */
+  readonly lastUpdate: number;
+
+  /** Prestige state — legacies carried from previous playthroughs. */
+  readonly prestige: PrestigeState;
 }

@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { App } from "../../ui/App";
 import { saveGame } from "../../storage/save";
-import { initialState } from "../../engine/state/initialState";
+import { createInitialState } from "../../engine/state/initialState";
 
 describe("App", () => {
   beforeEach(() => {
@@ -39,7 +39,7 @@ describe("App", () => {
   });
 
   it("renders a Realm Summary section when save exists", () => {
-    saveGame(initialState("Elderglen", Date.now()));
+    saveGame(createInitialState("Elderglen"));
     render(<App />);
     expect(
       screen.getByRole("region", { name: "Realm Summary" }),
@@ -47,7 +47,7 @@ describe("App", () => {
   });
 
   it("renders an Actions section with establish button when save exists", () => {
-    saveGame(initialState("Elderglen", Date.now()));
+    saveGame(createInitialState("Elderglen"));
     render(<App />);
     expect(screen.getByText("Actions")).toBeInTheDocument();
     expect(

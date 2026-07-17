@@ -2,8 +2,7 @@
 
 import type { StoryRecord } from "../../engine/story/types";
 import { getAge } from "../../engine/ages/definitions";
-import { getImprovement } from "../../engine/improvements/catalog";
-import { getTechNode } from "../../engine/techtree/definitions";
+import { getLegacy } from "../../engine/prestige/definitions";
 
 interface Props {
   readonly story: readonly StoryRecord[];
@@ -12,44 +11,33 @@ interface Props {
 function storyText(record: StoryRecord): string {
   switch (record.kind) {
     case "SettlementEstablished":
-      return `Turn ${record.turn}: Established a ${record.level}.`;
-    case "SettlementDeveloped":
-      if (record.source === "ChainReaction") {
-        return `Turn ${record.turn}: Chain reaction created a ${record.toLevel}.`;
-      }
-      return `Turn ${record.turn}: Developed ${record.fromLevel} into ${record.toLevel}.`;
-    case "SettlementLevelDiscovered":
-      return `Turn ${record.turn}: Discovered the ${record.level}.`;
-    case "ImprovementPurchased": {
-      const imp = getImprovement(record.improvementId);
-      return `Turn ${record.turn}: Built ${imp?.name ?? "an improvement"}.`;
-    }
-    case "CapacityIncreased":
-      return `Turn ${record.turn}: Settlement Capacity increased to ${record.newCapacity}.`;
+      return `Turn ${record.turn}: Established a ${record.tier}.`;
+    case "SettlementsUpgraded":
+      return `Turn ${record.turn}: All ${record.fromTier}s upgraded to ${record.toTier}s (${record.researchName}).`;
+    case "SpecializationUnlocked":
+      return `Turn ${record.turn}: ${record.building} unlocked (${record.researchName}).`;
+    case "ResearchCompleted":
+      return `Turn ${record.turn}: ${record.researchName} researched.`;
+    case "SettlementSpecialized":
+      return `Turn ${record.turn}: Settlement specialized as ${record.building}.`;
+    case "LandPurchased":
+      return `Turn ${record.turn}: Purchased a land parcel for ${record.cost} Cacao.`;
     case "AgeAdvanced": {
-      const age = getAge(record.age);
-      const ageName = age?.name ?? "new Age";
-      const hasNewContent =
-        record.newTechsAvailable.length > 0 ||
-        record.newImprovementsAvailable.length > 0;
-      if (hasNewContent) {
-        return `Turn ${record.turn}: Welcome to the ${ageName}. New discoveries and improvements are now available.`;
-      }
-      return `Turn ${record.turn}: Welcome to the ${ageName}.`;
+      const age = getAge(record.toAge);
+      return `Turn ${record.turn}: Welcome to the ${age?.name ?? "new Age"}.`;
     }
-    case "TechUnlocked": {
-      const tech = getTechNode(record.techId);
-      return `Turn ${record.turn}: ${tech?.name ?? "New discovery"} unlocked.`;
+    case "Ascended": {
+      const legacy = getLegacy(record.legacy);
+      return `Turn ${record.turn}: Ascended! Legacy: ${legacy?.name ?? record.legacy}. New realm begins.`;
     }
+    case "CacaoEarned":
+      return `Turn ${record.turn}: +${record.amount} Cacao from ${record.source}.`;
   }
 }
 
 export function StoryLog({ story }: Props) {
-  if (story.length === 0) {
-    return null;
-  }
+  if (story.length === 0) return null;
 
-  // Show most recent first
   const recent = [...story].reverse().slice(0, 20);
 
   return (

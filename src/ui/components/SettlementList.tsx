@@ -1,115 +1,141 @@
 // src/ui/components/SettlementList.tsx
 
 import type { GameState } from "../../engine/state/GameState";
-import type { SettlementStack, SettlementLevel, StandardLevel } from "../../engine/settlements/types";
-import type { TechNodeId } from "../../engine/techtree/types";
-import { getAge } from "../../engine/ages/definitions";
-import { isMaxLevel, nextLevel, isSpecialBuilding, levelIndex } from "../../engine/settlements/progression";
-import { getDescription } from "../../engine/settlements/descriptions";
-import { TECH_NODES, isBuildingUnlocked } from "../../engine/techtree/definitions";
+import type { Settlement, SpecialBuilding } from "../../engine/settlements/types";
+import type { ResearchId } from "../../engine/research/types";
+import { getResearch, ALL_RESEARCH } from "../../engine/research/definitions";
+import type { GameApi } from "../hooks/useGame";
 
 interface Props {
-  readonly state: GameState;
-  readonly onDevelop: (age: GameState["age"], level: SettlementLevel, target?: SettlementLevel) => void;
+  readonly game: GameApi;
+}
+
+/** Returns the building description for a specialization. */
+function getBuildingDescription(building: SpecialBuilding): string {
+  for (const node of ALL_RESEARCH) {
+    if (node.unlocksBuilding === building && node.buildingDescription) {
+      return node.buildingDescription;
+    }
+  }
+  return "";
+}
+
+/** Returns the buildings the player has unlocked via research, deduplicated. */
+function getUnlockedBuildings(
+  completedResearch: readonly ResearchId[],
+): SpecialBuilding[] {
+  const buildings = new Set<SpecialBuilding>();
+  for (const id of completedResearch) {
+    const node = getResearch(id);
+    if (node?.unlocksBuilding) buildings.add(node.unlocksBuilding);
+  }
+  return Array.from(buildings);
 }
 
 function SettlementRow({
-  stack,
-  unlockedTechs,
-  onDevelop,
+  settlement,
+  index,
+  unlockedBuildings,
+  onSpecialize,
+  onUnspecialize,
 }: {
-  readonly stack: SettlementStack;
-  readonly unlockedTechs: readonly TechNodeId[];
-  readonly onDevelop: (age: GameState["age"], level: SettlementLevel, target?: SettlementLevel) => void;
+  readonly settlement: Settlement;
+  readonly index: number;
+  readonly unlockedBuildings: SpecialBuilding[];
+  readonly onSpecialize: (settlementId: string, building: SpecialBuilding) => void;
+  readonly onUnspecialize: (settlementId: string) => void;
 }) {
-  const age = getAge(stack.age);
-  const isSpecial = isSpecialBuilding(stack.level);
-  const canDevelop = stack.quantity >= 2 && !isMaxLevel(stack.level) && !isSpecial;
-  const next = isSpecial ? null : nextLevel(stack.level as StandardLevel);
-
-  // Build list of available develop targets
-  const targets: { label: string; target?: SettlementLevel }[] = [];
-  if (canDevelop && next) {
-    targets.push({ label: `Develop into ${next}` });
-    // Add special building options if unlocked AND source level meets minimum
-    const sourceIdx = levelIndex(stack.level as StandardLevel);
-    for (const node of TECH_NODES) {
-      if (isBuildingUnlocked(node.unlocksBuilding, unlockedTechs)) {
-        const minIdx = levelIndex(node.minimumSourceLevel);
-        if (sourceIdx >= minIdx) {
-          targets.push({
-            label: `Develop into ${node.unlocksBuilding}`,
-            target: node.unlocksBuilding,
-          });
-        }
-      }
-    }
-  }
+  const isSpecial = settlement.specialization !== null;
+  const buildingDesc = isSpecial && settlement.specialization
+    ? getBuildingDescription(settlement.specialization)
+    : "";
 
   return (
     <li>
       <span>
-        {age?.name} {stack.level} ×{stack.quantity}
+        {settlement.tier}
+        {isSpecial && ` (${settlement.specialization})`}
       </span>
-      <span className="settlement-description">{getDescription(stack.level)}</span>
-      {canDevelop && targets.length === 1 && (
-        <button
-          type="button"
-          onClick={() => onDevelop(stack.age, stack.level)}
-          aria-label={`Develop ${stack.level} into ${next}`}
-        >
-          Develop
-        </button>
+      {isSpecial && buildingDesc && (
+        <span className="settlement-description">{buildingDesc}</span>
       )}
-      {canDevelop && targets.length > 1 && (
-        <>
-          {targets.map((t, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => onDevelop(stack.age, stack.level, t.target)}
-              aria-label={t.label}
-            >
-              {t.target ?? "Develop"}
-            </button>
-          ))}
-        </>
-      )}
-      {!canDevelop && stack.quantity >= 2 && isMaxLevel(stack.level) && (
-        <span aria-label="Maximum level reached">(Max)</span>
+      {!isSpecial && unlockedBuildings.length > 0 && (
+        <details>
+          <summary>Specialize</summary>
+          <ul>
+            {unlockedBuildings.map((building) => {
+              const node = ALL_RESEARCH.find((r) => r.unlocksBuilding === building);
+              return (
+                <li key={building}>
+                  <button
+                    type="button"
+                    onClick={() => onSpecialize(settlement.id, building)}
+                    aria-label={`Specialize settlement ${index + 1} as ${building}`}
+                  >
+                    {building}
+                  </button>
+                  {node?.buildingDescription && (
+                    <span className="settlement-description">
+                      {node.buildingDescription}
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </details>
       )}
       {isSpecial && (
-        <span aria-label={`${stack.level} — special building, cannot develop further`}>
-          (Special)
-        </span>
+        <>
+          <span aria-label="Specialized building — cannot upgrade further">
+            (Specialized)
+          </span>
+          <button
+            type="button"
+            onClick={() => onUnspecialize(settlement.id)}
+            aria-label={`Return settlement ${index + 1} to upgrade ladder`}
+          >
+            Unspecialize
+          </button>
+        </>
       )}
     </li>
   );
 }
 
-export function SettlementList({ state, onDevelop }: Props) {
+export function SettlementList({ game }: Props) {
+  const { state, specializeSettlement, unspecializeSettlement } = game;
+
   if (state.settlements.length === 0) {
     return (
       <section aria-label="Settlements">
         <h2>Settlements</h2>
-        <p>No settlements yet. Establish one to begin.</p>
+        <p>No settlements yet. Press E to establish your first settlement.</p>
       </section>
     );
   }
 
+  const unlockedBuildings = getUnlockedBuildings(state.completedResearch);
+
   return (
     <section aria-label="Settlements">
-      <h2>Settlements</h2>
-      <ul>
-        {state.settlements.map((stack, i) => (
+      <h2>Settlements ({state.settlements.length})</h2>
+      <p>
+        All settlements are at {state.baseTier} tier. Research upgrades to
+        advance them simultaneously.
+      </p>
+      <ol>
+        {state.settlements.map((s, i) => (
           <SettlementRow
-            key={`${stack.age}-${stack.level}-${i}`}
-            stack={stack}
-            unlockedTechs={state.unlockedTechs}
-            onDevelop={onDevelop}
+            key={s.id}
+            settlement={s}
+            index={i}
+            unlockedBuildings={unlockedBuildings}
+            onSpecialize={specializeSettlement}
+            onUnspecialize={unspecializeSettlement}
           />
         ))}
-      </ul>
+      </ol>
     </section>
   );
 }

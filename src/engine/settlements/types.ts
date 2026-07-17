@@ -1,46 +1,65 @@
 // src/engine/settlements/types.ts
 
-import type { AgeId } from "../ages/types";
-
-/** Standard settlement levels that follow the merge progression. */
+/**
+ * Standard settlement levels — the 9-tier progression chain.
+ * New settlements are always established at the player's current base tier
+ * (determined by research progress). Research upgrades ALL settlements
+ * to the next tier simultaneously — no merging.
+ */
 export type StandardLevel =
   | "Tent"
   | "Hut"
   | "Cottage"
   | "House"
-  | "Manor"
-  | "Hamlet"
+  | "Homestead"
   | "Village"
   | "Town"
   | "City"
-  | "Citadel";
+  | "Capital";
 
-/** Special buildings unlocked via the tech tree. Leaf nodes — no merging. */
+/**
+ * Specialized buildings — a settlement can be specialized into one of these
+ * instead of upgrading. It locks at its current tier and produces an ongoing
+ * bonus. Each is unlocked through research.
+ */
 export type SpecialBuilding =
   | "Farm"
   | "Market"
   | "Workshop"
-  | "Library"
-  | "TownHall"
+  | "Codex"
+  | "Council"
   | "Aqueduct"
-  | "Shrine"
-  | "Bank"
-  | "Apothecary"
-  | "Cathedral"
-  | "Embassy"
+  | "Estate"
+  | "Treasury"
   | "Observatory"
-  | "Garden"
-  | "Laboratory"
-  | "HerosHall"
+  | "CraftDistrict"
+  | "TradeMission"
+  | "Academy"
+  | "WarShrine"
+  | "AlchemistsLab"
   | "Temple"
+  | "Garden"
   | "Oracle"
-  | "EternalSpire";
+  | "Pyramid"
+  | "Stela"
+  | "Sanctum";
 
 /** All possible settlement types. */
 export type SettlementLevel = StandardLevel | SpecialBuilding;
 
-export interface SettlementStack {
-  readonly age: AgeId;
-  readonly level: SettlementLevel;
-  readonly quantity: number;
+/**
+ * An individual settlement on a land parcel.
+ * Replaces the old SettlementStack (which grouped identical settlements
+ * for merging). In v0.3, each settlement is a distinct entity.
+ */
+export interface Settlement {
+  readonly id: string;
+  readonly tier: StandardLevel;
+  /** If specialized, the building type this settlement has become. */
+  readonly specialization: SpecialBuilding | null;
+}
+
+/** Returns true if the settlement has been specialized. */
+export function isSpecialized(settlement: Settlement): boolean {
+  return settlement.specialization !== null;
 }

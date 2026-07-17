@@ -1,44 +1,92 @@
 // src/engine/state/initialState.ts
 
 import type { GameState } from "./GameState";
-import type { AgeId } from "../ages/types";
+import type { StandardLevel } from "../settlements/types";
+
+/** Current save version — old saves are not compatible with v0.3. */
+export const SAVE_VERSION = 3;
+
+/** Starting cacao amount. */
+export const STARTING_CACAO = 100;
+
+/** Starting land parcels. */
+export const STARTING_LAND_PARCELS = 5;
 
 /**
- * Starting Settlement Capacity per spec.
- * All other balance values are TBD and set to 0 until defined.
+ * Calculates the effective land parcel count, including bonuses from
+ * Council specializations and Trade Mission specializations.
+ * - Each Council adds +1 land parcel
+ * - Each Trade Mission adds +1 land parcel per Market and Council
  */
-export const STARTING_CAPACITY = 20;
+export function effectiveLandParcels(state: GameState): number {
+  let total = state.landParcels;
+  const settlements = state.settlements;
+
+  // Each Council adds +1 land parcel
+  const councilHouses = settlements.filter(
+    (s) => s.specialization === "Council",
+  ).length;
+  total += councilHouses;
+
+  // Each Trade Mission adds +1 per Market and Council
+  const tradeMissions = settlements.filter(
+    (s) => s.specialization === "TradeMission",
+  ).length;
+  if (tradeMissions > 0) {
+    const markets = settlements.filter(
+      (s) => s.specialization === "Market",
+    ).length;
+    total += tradeMissions * (markets + councilHouses);
+  }
+
+  return total;
+}
+
+/** Base passive cacao rate per hour, before multipliers. Now a bonus, not primary. */
+export const BASE_PASSIVE_RATE = 30; // 0.5 per minute — bonus for time away
+
+/** Starting settlement tier. */
+export const STARTING_BASE_TIER: StandardLevel = "Tent";
 
 /**
- * Starting Prosperity.
+ * Creates the initial game state for a new playthrough.
  *
- * Enough to establish ~3 settlements at V1 costs, giving the player
- * a productive first session without front-loading too much.
+ * If legacies are carried from a previous playthrough (prestige),
+ * their bonuses are applied here:
+ * - Founders' Stela: one Founding Age tech already researched
+ * - Garden of Eternity: +2 land parcels
  */
-export const STARTING_PROSPERITY = 30;
+export function createInitialState(
+  realmName: string,
+  completedResearch: string[] = [],
+  legacies: string[] = [],
+  landParcelsBonus: number = 0,
+): GameState {
+  let baseTier: StandardLevel = STARTING_BASE_TIER;
+  const research = [...completedResearch];
 
-/**
- * Creates a new game state with default starting values.
- *
- * Balance values marked TBD in the spec default to 0.
- * These will be replaced with real values after playtesting.
- *
- * @param realmName - The player's chosen realm name.
- * @param now - Unix timestamp (ms) for the initial `lastUpdate`.
- */
-export function initialState(realmName: string, now: number): GameState {
+  // Apply Founders' Stela legacy: start with forestry already researched
+  if (legacies.includes("FoundersStela")) {
+    research.push("forestry");
+    baseTier = "Hut"; // Forestry upgrades Tent → Hut
+  }
+
   return {
-    version: 2,
+    version: SAVE_VERSION,
     realmName,
-    age: "FoundingAge" as AgeId,
+    age: "FoundingAge",
     settlements: [],
     improvements: [],
-    prosperity: STARTING_PROSPERITY,
-    capacity: STARTING_CAPACITY,
-    unlockedTechs: [],
-    lastUpdate: now,
-    discoveredLevels: [],
+    cacao: STARTING_CACAO,
+    landParcels: STARTING_LAND_PARCELS + landParcelsBonus,
+    completedResearch: research as GameState["completedResearch"],
+    baseTier,
     story: [],
     turn: 0,
+    lastUpdate: Date.now(),
+    prestige: {
+      legacies: legacies as GameState["prestige"]["legacies"],
+      ascensionCount: 0,
+    },
   };
 }

@@ -1,25 +1,30 @@
+// src/tests/engine/settlements/progression.test.ts
+
 import { describe, it, expect } from "vitest";
 import {
   SETTLEMENT_LEVELS,
   levelIndex,
   nextLevel,
   isMaxLevel,
+  isSpecialBuilding,
+  isStandardLevel,
 } from "../../../engine/settlements/progression";
 
 describe("SETTLEMENT_LEVELS", () => {
-  it("has 10 levels in the correct order", () => {
-    expect(SETTLEMENT_LEVELS).toEqual([
-      "Tent",
-      "Hut",
-      "Cottage",
-      "House",
-      "Manor",
-      "Hamlet",
-      "Village",
-      "Town",
-      "City",
-      "Citadel",
-    ]);
+  it("has 9 levels", () => {
+    expect(SETTLEMENT_LEVELS).toHaveLength(9);
+  });
+
+  it("starts with Tent", () => {
+    expect(SETTLEMENT_LEVELS[0]).toBe("Tent");
+  });
+
+  it("ends with Capital", () => {
+    expect(SETTLEMENT_LEVELS[8]).toBe("Capital");
+  });
+
+  it("includes Homestead at index 4", () => {
+    expect(SETTLEMENT_LEVELS[4]).toBe("Homestead");
   });
 });
 
@@ -28,12 +33,12 @@ describe("levelIndex", () => {
     expect(levelIndex("Tent")).toBe(0);
   });
 
-  it("returns 9 for Citadel", () => {
-    expect(levelIndex("Citadel")).toBe(9);
+  it("returns 8 for Capital", () => {
+    expect(levelIndex("Capital")).toBe(8);
   });
 
-  it("returns 4 for Manor", () => {
-    expect(levelIndex("Manor")).toBe(4);
+  it("returns 4 for Homestead", () => {
+    expect(levelIndex("Homestead")).toBe(4);
   });
 });
 
@@ -42,29 +47,21 @@ describe("nextLevel", () => {
     expect(nextLevel("Tent")).toBe("Hut");
   });
 
-  it("returns Cottage for Hut", () => {
-    expect(nextLevel("Hut")).toBe("Cottage");
+  it("returns Capital for City", () => {
+    expect(nextLevel("City")).toBe("Capital");
   });
 
-  it("returns null for Citadel (max level)", () => {
-    expect(nextLevel("Citadel")).toBeNull();
-  });
-
-  it("returns Town for Village", () => {
-    expect(nextLevel("Village")).toBe("Town");
+  it("returns null for Capital", () => {
+    expect(nextLevel("Capital")).toBeNull();
   });
 });
 
 describe("isMaxLevel", () => {
-  it("returns true for Citadel", () => {
-    expect(isMaxLevel("Citadel")).toBe(true);
+  it("returns true for Capital", () => {
+    expect(isMaxLevel("Capital")).toBe(true);
   });
 
   it("returns false for Tent", () => {
     expect(isMaxLevel("Tent")).toBe(false);
-  });
-
-  it("returns false for City", () => {
-    expect(isMaxLevel("City")).toBe(false);
   });
 });

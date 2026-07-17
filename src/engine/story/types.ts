@@ -1,38 +1,62 @@
 // src/engine/story/types.ts
 
-import type { SettlementLevel } from "../settlements/types";
-import type { ImprovementId } from "../improvements/types";
+import type { StandardLevel, SpecialBuilding } from "../settlements/types";
 import type { AgeId } from "../ages/types";
+import type { LegacyId } from "../prestige/types";
 
+/**
+ * Story records are structured domain data, not prose.
+ * The UI decides how to present them.
+ */
 export type StoryRecord =
   | {
       kind: "SettlementEstablished";
       turn: number;
-      level: SettlementLevel;
+      tier: StandardLevel;
     }
   | {
-      kind: "SettlementDeveloped";
+      kind: "SettlementsUpgraded";
       turn: number;
-      fromLevel: SettlementLevel;
-      toLevel: SettlementLevel;
-      source: "Player" | "ChainReaction";
+      fromTier: StandardLevel;
+      toTier: StandardLevel;
+      researchName: string;
     }
   | {
-      kind: "SettlementLevelDiscovered";
+      kind: "SpecializationUnlocked";
       turn: number;
-      level: SettlementLevel;
+      building: SpecialBuilding;
+      researchName: string;
     }
   | {
-      kind: "ImprovementPurchased";
+      kind: "ResearchCompleted";
       turn: number;
-      improvementId: ImprovementId;
+      researchName: string;
     }
-  | { kind: "CapacityIncreased"; turn: number; newCapacity: number }
+  | {
+      kind: "SettlementSpecialized";
+      turn: number;
+      building: SpecialBuilding;
+    }
+  | {
+      kind: "LandPurchased";
+      turn: number;
+      cost: number;
+    }
   | {
       kind: "AgeAdvanced";
       turn: number;
-      age: AgeId;
-      newTechsAvailable: import("../techtree/types").TechNodeId[];
-      newImprovementsAvailable: import("../improvements/types").ImprovementId[];
+      fromAge: AgeId;
+      toAge: AgeId;
     }
-  | { kind: "TechUnlocked"; turn: number; techId: import("../techtree/types").TechNodeId };
+  | {
+      kind: "Ascended";
+      turn: number;
+      legacy: LegacyId;
+      ascensionCount: number;
+    }
+  | {
+      kind: "CacaoEarned";
+      turn: number;
+      amount: number;
+      source: string;
+    };

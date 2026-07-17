@@ -2,17 +2,17 @@
 
 import type { GameState } from "../../engine/state/GameState";
 import { getAge } from "../../engine/ages/definitions";
-import { totalSettlements } from "../../engine/settlements/capacity";
 
 interface Props {
   readonly state: GameState;
-  readonly effectiveCapacity: number;
-  readonly passiveRatePerHour: number;
+  readonly passiveRate: number;
+  readonly turnRate: number;
+  readonly landUsed: number;
+  readonly landTotal: number;
 }
 
-export function RealmSummary({ state, effectiveCapacity, passiveRatePerHour }: Props) {
+export function RealmSummary({ state, passiveRate, turnRate, landUsed, landTotal }: Props) {
   const age = getAge(state.age);
-  const used = totalSettlements(state.settlements);
 
   return (
     <section aria-label="Realm Summary">
@@ -24,19 +24,34 @@ export function RealmSummary({ state, effectiveCapacity, passiveRatePerHour }: P
           <dd className="flavor-text">{age.description}</dd>
         )}
 
-        <dt>Prosperity</dt>
-        <dd>{state.prosperity.toLocaleString()}</dd>
+        <dt>Cacao</dt>
+        <dd>{state.cacao.toLocaleString()}</dd>
 
-        <dt>Passive Income</dt>
-        <dd>{passiveRatePerHour} per hour</dd>
+        <dt>Income Per Turn</dt>
+        <dd>{turnRate}</dd>
 
-        <dt>Settlement Capacity</dt>
+        <dt>Time Away Bonus</dt>
+        <dd>{passiveRate} per hour</dd>
+
+        <dt>Land Parcels</dt>
         <dd>
-          {used} / {effectiveCapacity}
+          {landUsed} / {landTotal}
         </dd>
+
+        <dt>Settlement Tier</dt>
+        <dd>{state.baseTier}</dd>
 
         <dt>Turn</dt>
         <dd>{state.turn}</dd>
+
+        {state.prestige.ascensionCount > 0 && (
+          <>
+            <dt>Ascensions</dt>
+            <dd>{state.prestige.ascensionCount}</dd>
+            <dt>Legacies</dt>
+            <dd>{state.prestige.legacies.join(", ") || "None"}</dd>
+          </>
+        )}
       </dl>
     </section>
   );

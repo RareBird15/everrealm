@@ -20,6 +20,34 @@
   --max-width: 720px;
 }
 
+/* Light theme */
+[data-theme="light"] {
+  --bg: #f5f0e8;
+  --bg-panel: #e8e0d0;
+  --bg-hover: #d8d0c0;
+  --text: #2c2416;
+  --text-muted: #5a4e3a;
+  --text-flavor: #6a5e4a;
+  --accent: #8a6a20;
+  --accent-hover: #a07a28;
+  --border: #c4b896;
+  --error-bg: #f0d0d0;
+  --error-text: #8a2020;
+  --btn-bg: #e0d8c8;
+  --btn-bg-hover: #d0c8b8;
+  --btn-disabled: #e8e0d0;
+  --btn-disabled-text: #aaa098;
+}
+
+/* Text size options */
+[data-text-size="large"] {
+  font-size: 19px;
+}
+
+[data-text-size="extra-large"] {
+  font-size: 22px;
+}
+
 * {
   box-sizing: border-box;
 }

@@ -8,10 +8,10 @@
 
 ## Elevator Pitch
 
-Build a peaceful fantasy realm by establishing settlements, researching upgrades
-that transform your civilization, choosing how to specialize your communities,
-and guiding your realm through six Ages — then ascended into a permanent legacy
-that shapes your next playthrough.
+Build a peaceful Mesoamerican realm by establishing settlements, researching
+upgrades that transform your civilization, choosing how to specialize your
+communities, and guiding your realm through six Ages — then ascend into a
+permanent legacy that shapes your next playthrough.
 
 Everrealm is designed from the ground up for screen readers while remaining
 enjoyable for everyone. No merging. No clicking 256 times. Decisions, not
@@ -26,6 +26,12 @@ repetition.
 Everrealm is a calm kingdom-building strategy game whose core mechanic is
 research-based progression. The player makes strategic decisions: what to
 research, when to specialize, how to expand, and when to advance to a new Age.
+
+The game is set in a fictional Mesoamerican world inspired by the civilizations
+of the region — Aztec, Maya, Zapotec, Mixtec, and others — blended into a
+cohesive setting rather than tied to one specific culture. The player guides a
+people from temporary shelters to a great capital, through ages of growth,
+city-states, splendor, legend, and myth.
 
 Each Age introduces a new mechanic layer, so the game gets deeper as you go —
 but never more complicated all at once. The game is about composing a realm,
@@ -77,7 +83,7 @@ the player's current base tier (determined by their research progress).
 | 5 | Homestead | A self-sufficient property with land |
 | 6 | Village | A cluster of homesteads with shared resources |
 | 7 | Town | A center of commerce with markets and trades |
-| 8 | City | A major population center with walls and institutions |
+| 8 | City | A major population center with temples and plazas |
 | 9 | Capital | The seat of your realm, the center of power |
 
 **Capital is the top of the chain.** No settlement upgrades exist beyond
@@ -96,16 +102,17 @@ one parcel. The player starts with a limited number of parcels and can expand
 through research, improvements, and Age advancement.
 
 - Starting parcels: 5
-- Expanded through: Town Hall specializations, realm improvements, and Age
+- Expanded through: Council House specializations, realm improvements, and Age
   advancement bonuses
-- Specialized settlements still occupy their parcel
 
 Land parcels make capacity feel physical — your realm has borders, and those
 borders grow as your civilization develops.
 
-### Prosperity
+### Cacao (Currency)
 
-Prosperity is the primary game currency, earned passively and through actions.
+Cacao is the primary game currency, earned passively and through actions.
+Cacao beans were used as currency throughout Mesoamerica, and the name grounds
+the economy in the setting.
 
 **Passive income:** Each settlement generates passive income based on its tier.
 Higher-tier settlements produce more. Specialized settlements produce bonuses
@@ -113,11 +120,11 @@ on top of their base tier income. Realm improvements and special buildings add
 multipliers.
 
 **Active income:** Researching upgrades, discovering new building types, and
-advancing Ages all award prosperity.
+advancing Ages all award cacao.
 
-**Spending prosperity:** The player spends prosperity to establish
-settlements, research upgrades, buy land, purchase realm improvements, and
-advance Ages. Research costs scale up within each Age and across Ages.
+**Spending cacao:** The player spends cacao to establish settlements, research
+upgrades, buy land, purchase realm improvements, and advance Ages. Research
+costs scale up within each Age and across Ages.
 
 ### Research
 
@@ -149,14 +156,15 @@ lock it for income," not "what level do I specialize at for max benefit."
 **How specialization evolves across Ages:**
 
 - **Founding Age:** Flat bonuses (Farm gives +food, Market gives +income, etc.)
-- **Age of Growth:** Realm-wide effects (Library boosts discovery across
-  everything, Town Hall expands land for all, Aqueduct multiplies passive rate)
-- **Age of Lords:** Specializations interact with each other (Manor scales with
-  other specializations, Bank rewards stacking, Observatory makes Libraries
-  stronger)
-- **Golden Age:** Synergy across Ages (Factory scales with Farms and
-  Workshops, Embassy scales with Markets and Town Halls, Academy scales with
-  Libraries and Observatories)
+- **Age of Growth:** Realm-wide effects (Codex House boosts discovery across
+  everything, Council House expands land for all, Aqueduct multiplies passive
+  rate)
+- **Age of City-States:** Specializations interact with each other (Noble House
+  scales with other specializations, Treasury rewards stacking, Observatory
+  makes Codex Houses stronger)
+- **Age of Splendor:** Synergy across Ages (Craft District scales with Farms
+  and Workshops, Trade Mission scales with Markets and Council Houses, House
+  of Learning scales with Codex Houses and Observatories)
 - **Age of Legends:** Unique power (each building does something no other
   building does — active income, research cost reduction, realm-wide
   multipliers, specialization scaling, future information)
@@ -164,27 +172,30 @@ lock it for income," not "what level do I specialize at for max benefit."
 
 ### Ages (6)
 
-Each Age introduces one new mechanic layer on top of the previous ones. The
-game gets deeper, but never more complicated all at once.
+Each Age introduces one new mechanic layer on top of the previous ones.
+The game gets deeper, but never more complicated all at once.
 
 **Founding Age (Age 0) — The Basics**
-Core loop: establish settlements, earn prosperity, research first upgrades,
+Core loop: establish settlements, earn cacao, research first upgrades,
 discover specialization. The game teaches itself here.
 
 **Age of Growth (Age 1) — Specialization**
 Specialization unlocks. The player now has a real choice: upgrade or
 specialize. The decision space widens. Realm-wide effects begin.
 
-**Age of Lords (Age 2) — Interaction**
-Specializations start interacting with each other. A Manor scales with your
-other specializations. A Bank rewards stacking. An Observatory makes your
-old Libraries stronger. Your choices start building on each other.
+**Age of City-States (Age 2) — Interaction**
+The realm grows into city-states, known in Nahuatl as altepetl —
+self-governing communities with their own identity. Specializations start
+interacting with each other. A Noble House scales with your other
+specializations. A Treasury rewards stacking. An Observatory makes your
+old Codex Houses stronger. Your choices start building on each other.
 
-**Golden Age (Age 3) — Synergy**
-Specializations feed into each other across Ages. A Factory scales with your
-Farms and Workshops from the Founding Age. An Embassy scales with your Markets
-and Town Halls. An Academy scales with your Libraries and Observatories. The
-game becomes about composing your realm, not just building it.
+**Age of Splendor (Age 3) — Synergy**
+Specializations feed into each other across Ages. A Craft District scales
+with your Farms and Workshops from the Founding Age. A Trade Mission scales
+with your Markets and Council Houses. A House of Learning scales with your
+Codex Houses and Observatories. The game becomes about composing your realm,
+not just building it.
 
 **Age of Legends (Age 4) — Unique Power**
 Five mechanically unique buildings, each doing something no previous building
@@ -207,16 +218,16 @@ design.
 
 | Action | Description |
 |--------|-------------|
-| **Establish Settlement** | Spend prosperity, use a land parcel, create a settlement at current base tier |
-| **Research Upgrade** | Spend prosperity, all settlements upgrade to next tier OR unlock new specialization |
+| **Establish Settlement** | Spend cacao, use a land parcel, create a settlement at current base tier |
+| **Research Upgrade** | Spend cacao, all settlements upgrade to next tier OR unlock new specialization |
 | **Specialize Settlement** | Choose a settlement, lock it at current tier, it becomes a prosperity building |
-| **Buy Land** | Spend prosperity, gain a land parcel |
+| **Buy Land** | Spend cacao, gain a land parcel |
 | **Advance Age** | Requires top-tier tech researched; unlocks new content |
 
 ### Turn Structure
 
 The game is turn-based. Each action advances the turn counter. Passive
-prosperity accrues between turns based on elapsed time and settlement tiers.
+cacao accrues between turns based on elapsed time and settlement tiers.
 Screen reader announcements are prefixed with the turn number for uniqueness.
 
 ---
@@ -229,16 +240,16 @@ Screen reader announcements are prefixed with the turn number for uniqueness.
 
 | Research | Effect | Description |
 |----------|--------|-------------|
-| Woodcutting | Tent → Hut | Your people learn to harvest trees and build simple permanent shelters. |
-| Plasterwork | Hut → Cottage | Your people learn to mix mud, clay, and straw to fill gaps in walls and make homes that keep out the weather. |
+| Forestry | Tent → Hut | Your people learn to harvest trees and build simple permanent shelters. |
+| Adobe Making | Hut → Cottage | Your people learn to mix mud, clay, and straw to build walls that keep out the weather. Adobe is one of the oldest building materials in Mesoamerica. |
 
 **Specializations:**
 
 | Research | Building | Effect | Description |
 |----------|----------|--------|-------------|
-| Agriculture | Farm | +passive income, food bonus | Your people learn to cultivate the land instead of foraging. |
-| Trade | Market | +passive income, commerce bonus | Your people learn to exchange goods between settlements. |
-| Crafts | Workshop | +passive income, establish cost reduction | Your people learn to make tools and goods by hand. |
+| Agriculture | Farm | +passive income, food bonus | Your people learn to cultivate milpa — corn, beans, and squash grown together — instead of foraging. |
+| Trade | Market | +passive income, commerce bonus | Your people learn to exchange goods through pochteca — traveling merchants who connect settlements and carry news as well as cargo. |
+| Crafts | Workshop | +passive income, establish cost reduction | Your people learn to make tools and goods by hand — pottery, textiles, and carved obsidian. |
 
 ### Age of Growth (5 researches)
 
@@ -246,50 +257,50 @@ Screen reader announcements are prefixed with the turn number for uniqueness.
 
 | Research | Effect | Description |
 |----------|--------|-------------|
-| Masonry | Cottage → House | Your people learn to cut and stack stone. Walls become solid and permanent. |
-| Metalworking | House → Homestead | Your people learn to smelt ore and forge tools. Homesteads are self-sufficient properties built with iron tools. |
+| Stonecutting | Cottage → House | Your people learn to cut and stack stone. Walls become solid and permanent. |
+| Stucco | House → Homestead | Your people learn to mix lime stucco — a Mesoamerican innovation — to coat walls and make homes that last. Homesteads are self-sufficient properties built to endure. |
 
 **Specializations:**
 
 | Research | Building | Effect | Description |
 |----------|----------|--------|-------------|
-| Scholarship | Library | +discovery reward (realm-wide) | Your people learn to record knowledge and pass it between settlements. |
-| Governance | Town Hall | +land parcels | Your people learn to organize beyond individual households and manage territory. |
-| Engineering | Aqueduct | +passive rate multiplier (realm-wide) | Your people learn to move water, build roads, and connect settlements. |
+| Codex Keeping | Codex House | +discovery reward (realm-wide) | Your people learn to record knowledge in painted codices — books of folded bark paper — and pass wisdom between settlements. |
+| Governance | Council House | +land parcels | Your people learn to organize beyond individual households and manage territory as a community. |
+| Engineering | Aqueduct | +passive rate multiplier (realm-wide) | Your people learn to move water through aqueducts and canals, connecting settlements and making the land productive. |
 
-### Age of Lords (5 researches)
+### Age of City-States (5 researches)
 
 **Settlement upgrades:**
 
 | Research | Effect | Description |
 |----------|--------|-------------|
-| Glassmaking | Homestead → Village | Your people learn to melt sand into glass. Windows, lenses, light. A village is a place where people can see inside their homes. |
-| Gemcutting | Village → Town | Your people learn that the shiny rocks from the mine have value. Gems become currency, status, trade goods. A town is a center of commerce. |
+| Mosaic Art | Homestead → Village | Your people learn to create mosaics from turquoise, obsidian, and shell — decorating public buildings and marking villages as places of beauty. |
+| Obsidian Working | Village → Town | Your people learn to work obsidian — the sharpest material known — into tools, blades, and trade goods. A town is a center of commerce and craft. |
 
 **Specializations:**
 
 | Research | Building | Effect | Description |
 |----------|----------|--------|-------------|
-| Estate Management | Manor | +passive income, scales with total specializations | Your people learn to run large, organized estates. The more your realm is organized, the more efficient each estate becomes. |
-| Banking | Bank | +passive rate multiplier, scales per Bank built | Your people learn to store and lend wealth. Banks reward commitment — one gives a small boost, three give a much bigger one. |
-| Astronomy | Observatory | +discovery reward, scales with Libraries | Your people learn to study the stars. Each Observatory makes your old Libraries more valuable. |
+| Calpulli Organization | Noble House | +passive income, scales with total specializations | Your people learn to organize communities through calpulli — social groups that manage land and labor together. The more your realm is organized, the more efficient each noble house becomes. |
+| Cacao Treasury | Treasury | +passive rate multiplier, scales per Treasury built | Your people learn to store and trade cacao beans as currency. Treasuries reward commitment — one gives a small boost, three give a much bigger one. |
+| Astronomy | Observatory | +discovery reward, scales with Codex Houses | Your people learn to track the cycles of the sun, moon, and stars. Each Observatory makes your old Codex Houses more valuable, as ancient records meet new observations. |
 
-### Golden Age (5 researches)
+### Age of Splendor (5 researches)
 
 **Settlement upgrades:**
 
 | Research | Effect | Description |
 |----------|--------|-------------|
-| Architecture | Town → City | Your people learn to design and build on a grand scale. A city is planned, organized, with districts and infrastructure. |
-| Urban Planning | City → Capital | Your people learn to build a seat of power. A capital organizes everything else around it. |
+| Architecture | Town → City | Your people learn to design and build on a grand scale — temples, plazas, and ball courts. A city is planned, organized, with districts and ceremonial centers. |
+| Urban Planning | City → Capital | Your people learn to build a seat of power. A capital organizes everything else around it, drawing the realm together. |
 
 **Specializations (synergy — each scales with buildings from previous Ages):**
 
 | Research | Building | Scales With | Description |
 |----------|----------|-------------|-------------|
-| Industry | Factory | Farms + Workshops | Your early-game specializations feed into mid-game power. Each Farm and Workshop makes your Factory stronger. |
-| Diplomacy | Embassy | Markets + Town Halls | Trade and governance infrastructure makes diplomacy more effective. Each Market and Town Hall expands your Embassy's land bonus. |
-| Philosophy | Academy | Libraries + Observatories | Knowledge buildings feed each other. Each Library and Observatory makes your Academy's discovery bonus stronger. |
+| Industry | Craft District | Farms + Workshops | Your early-game specializations feed into mid-game power. Each Farm and Workshop makes your Craft District stronger. |
+| Diplomacy | Trade Mission | Markets + Council Houses | Trade and governance infrastructure makes diplomacy more effective. Each Market and Council House expands your Trade Mission's reach. |
+| Philosophy | House of Learning | Codex Houses + Observatories | Knowledge buildings feed each other. Each Codex House and Observatory makes your House of Learning's discovery bonus stronger. |
 
 ### Age of Legends (5 researches — all specializations, no settlement upgrades)
 
@@ -297,10 +308,10 @@ Each building does something mechanically unique. No "bigger numbers."
 
 | Research | Building | Effect | Description |
 |----------|----------|--------|-------------|
-| Heroism | Hero's Hall | Active income per turn (flat, unique) | A legendary figure whose deeds generate wealth directly. No other building produces active income. |
-| Alchemy | Laboratory | Reduces all future research costs (permanent, unique) | Each Laboratory makes everything cheaper — not just the next research, all of them. |
+| Heroism | Hall of Valor | Active income per turn (flat, unique) | A legendary figure whose deeds generate wealth directly. No other building produces active income. |
+| Alchemy | Alchemist's Lab | Reduces all future research costs (permanent, unique) | Each Alchemist's Lab makes everything cheaper — not just the next research, all of them. |
 | Sacred Geometry | Temple | Realm-wide passive multiplier (unique scale) | One Temple multiplies all passive income across your entire realm. |
-| Garden Cultivation | Garden | Prosperity per turn per specialization (unique scaling) | Each Garden generates income for every specialized settlement you have. Rewards commitment to specialization. |
+| Garden Cultivation | Garden | Cacao per turn per specialization (unique scaling) | Each Garden generates income for every specialized settlement you have. Rewards commitment to specialization. |
 | Prophecy | Oracle | Reveals next Age's researches before advancing (unique information) | Strategic advantage — plan your realm for what's coming instead of advancing blind. |
 
 ### Age of Myths (4 researches — transformation focus, no settlement upgrades)
@@ -326,11 +337,11 @@ legacy carries forward as a permanent bonus to the next playthrough.
 
 | Legacy | Bonus | Play Style |
 |--------|-------|-----------|
-| Eternal Spire | +10% passive income across all future playthroughs | Wealth-focused |
-| Founders' Monument | Start each new game with one Founding Age tech already researched | Skip early game |
-| Crystal Palace | Specializations are 25% stronger in future games | Specialization-focused |
+| Eternal Pyramid | +10% passive income across all future playthroughs | Wealth-focused |
+| Founders' Stela | Start each new game with one Founding Age tech already researched | Skip early game |
+| Jade Palace | Specializations are 25% stronger in future games | Specialization-focused |
 | Garden of Eternity | Start with 2 extra land parcels in every future game | Expansion-focused |
-| Library of Ages | See the next Age's researches before advancing in every future game | Planning-focused |
+| Codex of Ages | See the next Age's researches before advancing in every future game | Planning-focused |
 
 ### Legacy Slots
 
@@ -357,8 +368,8 @@ Each Age adds one new mechanic layer:
 |-----|-------------|
 | Founding | Basics — establish, research, earn |
 | Growth | Specialization — upgrade or lock for income |
-| Lords | Interaction — specializations affect each other |
-| Golden | Synergy — specializations scale across Ages |
+| City-States | Interaction — specializations affect each other |
+| Splendor | Synergy — specializations scale across Ages |
 | Legends | Unique power — mechanically distinct buildings |
 | Myths | Transformation — ascension and legacy |
 
@@ -370,9 +381,9 @@ complexity feels earned.
 
 ## Part VI – Realm Improvements
 
-Realm improvements are realm-wide bonuses purchased with prosperity. They
+Realm improvements are realm-wide bonuses purchased with cacao. They
 exist alongside the specialization system and provide another way to spend
-prosperity.
+cacao.
 
 The improvement system from previous versions can largely carry forward, with
 adjustments for the new land parcel system and the removal of merging. Exact
@@ -385,7 +396,7 @@ improvement definitions will be finalized during implementation.
 The following will be finalized during implementation:
 
 - Exact research costs and balance constants
-- Starting prosperity and passive income rates
+- Starting cacao and passive income rates
 - Land parcel counts and expansion costs
 - Exact specialization bonus values
 - How many legendary buildings are needed for ascension
@@ -406,7 +417,8 @@ The following will be finalized during implementation:
   system with legacy slots
 - **Changed:** Advancement gate (top-tier tech instead of 2 Citadels),
   capacity (land parcels instead of abstract number), passive income (scales
-  with settlement tier instead of flat rate)
+  with settlement tier instead of flat rate), currency (Cacao instead of
+  Prosperity), theme (Mesoamerican instead of medieval European)
 
 ### What stayed
 
@@ -438,6 +450,23 @@ The following will be finalized during implementation:
 - Prestige gives specific strategic bonuses, not generic multipliers
 - Designed for screen readers from the ground up
 - Fewer researches (30 vs hundreds), but each one matters
+
+### Mesoamerican Setting
+
+Everrealm draws from the civilizations of Mesoamerica — Aztec, Maya, Zapotec,
+Mixtec, and others — blended into a fictional setting rather than recreating
+any single culture. The setting influences:
+
+- **Currency:** Cacao beans, used as currency throughout Mesoamerica
+- **Architecture:** Adobe, stone, stucco, monumental temples and plazas
+- **Knowledge:** Codices (painted books of folded bark paper), astronomy
+- **Trade:** Pochteca (traveling merchant-diplomats), obsidian, turquoise
+- **Agriculture:** Milpa (corn, beans, squash grown together), chinampas
+- **Community:** Calpulli (organized social groups), altepetl (city-states)
+
+Nahuatl and other Mesoamerican terms appear in descriptions where context
+makes the meaning clear, but building and research names remain in English
+for screen reader clarity.
 
 ### Core identity
 

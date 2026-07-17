@@ -1,100 +1,44 @@
 // src/engine/ages/advance.ts
 
-import type { AgeId } from "./types";
-import type { SettlementStack } from "../settlements/types";
-import type { Prosperity } from "../prosperity/types";
+import type { GameState } from "../state/GameState";
+import { nextAge, getAge } from "./definitions";
+import { canAdvanceAge } from "../research/definitions";
 import type { GameEvent } from "../events/GameEvent";
-import type { GameError } from "../events/GameError";
-import type { Result } from "../../shared/types";
-import { findStack, addToStack, removeFromStack } from "../settlements/stacks";
-import { nextAge, isFinalAge } from "./definitions";
 
-/**
- * Prosperity cost to advance to the next Age (V1 placeholder).
- *
- * Advancing is a major milestone — the cost should be significant
- * but achievable with active play.
- */
-export const AGE_ADVANCE_COST: Prosperity = 200;
-
-export interface AdvanceAgeResult {
-  readonly age: AgeId;
-  readonly settlements: SettlementStack[];
-  readonly events: GameEvent[];
-}
+/** Cacao reward for advancing to a new Age. */
+export const AGE_ADVANCE_REWARD = 100;
 
 /**
  * Advances the realm to the next Age.
- *
- * Requirements:
- * - Two Citadels of the current Age must exist (consumed on advancement).
- * - The player must have enough Prosperity.
- * - The realm must not already be in the final Age.
- *
- * On advancement:
- * - The two Citadels are consumed.
- * - One Tent of the new Age is created.
- * - The current Age is updated.
+ * Requires the top-tier technology for the current Age to be researched.
  */
-export function advanceAge(
-  settlements: readonly SettlementStack[],
-  currentAge: AgeId,
-  prosperity: Prosperity,
-): Result<AdvanceAgeResult, GameError> {
-  // Can't advance from the final Age
-  if (isFinalAge(currentAge)) {
-    return {
-      success: false,
-      error: {
-        type: "AgeAdvancementNotAvailable",
-        currentAge,
-        citadelCount: 0,
-      },
-    };
-  }
+export function advanceAge(state: GameState): {
+  state: GameState;
+  events: GameEvent[];
+} {
+  const next = nextAge(state.age);
+  if (!next) throw new Error("You are already in the final Age.");
 
-  // Need at least 2 Citadels of the current Age
-  const citadelStack = findStack(settlements, currentAge, "Citadel");
-  const citadelCount = citadelStack?.quantity ?? 0;
-  if (!citadelStack || citadelCount < 2) {
-    return {
-      success: false,
-      error: {
-        type: "AgeAdvancementNotAvailable",
-        currentAge,
-        citadelCount,
-      },
-    };
-  }
-
-  // Check Prosperity
-  if (prosperity < AGE_ADVANCE_COST) {
-    return {
-      success: false,
-      error: {
-        type: "InsufficientProsperity",
-        cost: AGE_ADVANCE_COST,
-        available: prosperity,
-      },
-    };
-  }
-
-  const next = nextAge(currentAge)!; // Safe: isFinalAge checked above
-
-  // Consume 2 Citadels, create 1 Tent of the new Age
-  let updated = removeFromStack(settlements, currentAge, "Citadel", 2);
-  updated = addToStack(updated, next.id, "Tent", 1);
-
-  const events: GameEvent[] = [
-    { type: "AgeAdvanced", fromAge: currentAge, toAge: next.id },
-  ];
+  if (!canAdvanceAge(state.age, state.completedResearch))
+    throw new Error(
+      "You must complete the top-tier research for your current Age before advancing.",
+    );
 
   return {
-    success: true,
-    value: {
+    state: {
+      ...state,
       age: next.id,
-      settlements: updated,
-      events,
+      cacao: state.cacao + AGE_ADVANCE_REWARD,
+      turn: state.turn + 1,
     },
+    events: [
+      {
+        type: "AgeAdvanced",
+        turn: state.turn + 1,
+        fromAge: state.age,
+        toAge: next.id,
+        reward: AGE_ADVANCE_REWARD,
+      },
+    ],
   };
 }

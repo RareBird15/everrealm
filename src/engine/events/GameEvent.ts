@@ -1,44 +1,88 @@
 // src/engine/events/GameEvent.ts
 
+import type { StandardLevel, SpecialBuilding } from "../settlements/types";
 import type { AgeId } from "../ages/types";
-import type { SettlementLevel } from "../settlements/types";
-import type { Prosperity } from "../prosperity/types";
-import type { ImprovementId } from "../improvements/types";
+import type { LegacyId } from "../prestige/types";
 
-export type DevelopSource = "Player" | "ChainReaction";
-
-export type ProsperitySource =
-  | "Passive"
-  | "Establish"
-  | "Develop"
-  | "ChainReaction"
-  | "Discovery"
-  | "AgeEntry"
-  | "Improvement";
-
+/**
+ * Game events in v0.3.
+ *
+ * Events are structured data (not prose) that get rendered into
+ * human-readable text by the story system.
+ *
+ * Changes from v0.2.x:
+ * - Removed: ChainReactionStarted, ChainReactionCompleted, SettlementDeveloped, SettlementLevelDiscovered, PassiveProsperityApplied
+ * - Added: SettlementsUpgraded, SpecializationUnlocked, ResearchCompleted, LandPurchased, SettlementSpecialized, Ascended
+ * - Renamed: ProsperityEarned → CacaoEarned
+ */
 export type GameEvent =
   | {
       type: "SettlementEstablished";
-      age: AgeId;
-      level: SettlementLevel;
+      turn: number;
+      settlementTier: StandardLevel;
+      cost: number;
+      reward: number;
     }
-  | { type: "ChainReactionStarted" }
   | {
-      type: "SettlementDeveloped";
-      age: AgeId;
-      level: SettlementLevel;
-      newLevel: SettlementLevel;
-      source: DevelopSource;
+      type: "SettlementsUpgraded";
+      turn: number;
+      fromTier: StandardLevel;
+      toTier: StandardLevel;
+      researchName: string;
     }
-  | { type: "ChainReactionCompleted"; chainLength: number }
-  | { type: "SettlementLevelDiscovered"; level: SettlementLevel }
   | {
-      type: "ProsperityEarned";
-      amount: Prosperity;
-      source: ProsperitySource;
+      type: "SpecializationUnlocked";
+      turn: number;
+      building: SpecialBuilding;
+      researchName: string;
     }
-  | { type: "ImprovementPurchased"; improvementId: ImprovementId }
-  | { type: "AgeAdvanced"; fromAge: AgeId; toAge: AgeId }
-  | { type: "CapacityReached" }
-  | { type: "PassiveProsperityApplied"; amount: Prosperity }
-  | { type: "TechUnlocked"; techId: import("../techtree/types").TechNodeId };
+  | {
+      type: "ResearchCompleted";
+      turn: number;
+      researchName: string;
+      cost: number;
+      discoveryReward: number;
+      canAdvanceAge: boolean;
+    }
+  | {
+      type: "SettlementSpecialized";
+      turn: number;
+      settlementId: string;
+      building: SpecialBuilding;
+    }
+  | {
+      type: "LandPurchased";
+      turn: number;
+      parcels: number;
+      cost: number;
+    }
+  | {
+      type: "ImprovementPurchased";
+      turn: number;
+      improvementName: string;
+      cost: number;
+    }
+  | {
+      type: "AgeAdvanced";
+      turn: number;
+      fromAge: AgeId;
+      toAge: AgeId;
+      reward: number;
+    }
+  | {
+      type: "Ascended";
+      turn: number;
+      legacy: LegacyId;
+      ascensionCount: number;
+    }
+  | {
+      type: "CacaoEarned";
+      turn: number;
+      amount: number;
+      source: string;
+    }
+  | {
+      type: "Error";
+      turn: number;
+      message: string;
+    };

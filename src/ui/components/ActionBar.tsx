@@ -1,77 +1,27 @@
 // src/ui/components/ActionBar.tsx
 
 import { useState } from "react";
-import type { GameError } from "../../engine/events/GameError";
-import { ESTABLISH_COST } from "../../engine/settlements/establish";
-import { AGE_ADVANCE_COST } from "../../engine/ages/advance";
-import { getAge } from "../../engine/ages/definitions";
+import type { GameApi } from "../hooks/useGame";
+import { LEGACIES } from "../../engine/prestige/definitions";
+import type { LegacyId } from "../../engine/prestige/types";
 
 interface Props {
-  readonly canEstablish: boolean;
-  readonly canAdvanceAge: boolean;
-  readonly error: GameError | null;
-  readonly onEstablish: () => void;
-  readonly onAdvanceAge: () => void;
-  readonly onDismissError: () => void;
-  readonly onReset: () => void;
+  readonly game: GameApi;
 }
 
-function errorText(error: GameError): string {
-  switch (error.type) {
-    case "InsufficientProsperity":
-      return `Need ${error.cost} Prosperity, but only have ${error.available}.`;
-    case "SettlementCapacityFull":
-      return `Settlement Capacity is full (${error.current} / ${error.capacity}).`;
-    case "NoEligibleSettlements":
-      return `No ${error.level} settlements available to develop.`;
-    case "ImprovementNotFound":
-      return `Improvement not found.`;
-    case "ImprovementAlreadyPurchased":
-      return `Already purchased.`;
-    case "AgeAdvancementNotAvailable":
-      return `Need 2 Citadels to advance (have ${error.citadelCount}).`;
-    case "InvalidAgeOrLevel":
-      return `Cannot develop ${error.level}.`;
-    case "TechNotFound":
-      return `Discovery not found.`;
-    case "TechAlreadyUnlocked":
-      return `Already unlocked.`;
-    case "TechPrerequisitesNotMet":
-      return `Requires unlocking a Tier 1 discovery first.`;
-    case "BuildingNotUnlocked":
-      return `${error.building} has not been unlocked yet.`;
-    case "SourceLevelTooLow":
-      return `${error.building} requires at least ${error.minimumLevel}s to build (you used ${error.sourceLevel}s).`;
-    case "TechNotAvailableForAge": {
-      const age = getAge(error.currentAge);
-      const ageName = age?.name ?? "a later Age";
-      return `This discovery is not yet available. Advance beyond the ${ageName} to unlock it.`;
-    }
-    case "ImprovementNotAvailableForAge": {
-      return `This improvement is not yet available. Advance to a new Age to unlock it.`;
-    }
-  }
-}
-
-export function ActionBar({
-  canEstablish,
-  canAdvanceAge,
-  error,
-  onEstablish,
-  onAdvanceAge,
-  onDismissError,
-  onReset,
-}: Props) {
+export function ActionBar({ game }: Props) {
+  const state = game.state;
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const [showingLegacies, setShowingLegacies] = useState(false);
 
   return (
     <section aria-label="Actions">
       <h2>Actions</h2>
 
-      {error && (
+      {game.error && (
         <div role="alert">
-          <p>{errorText(error)}</p>
-          <button type="button" onClick={onDismissError}>
+          <p>{game.error}</p>
+          <button type="button" onClick={game.dismissError}>
             Dismiss
           </button>
         </div>
@@ -80,21 +30,40 @@ export function ActionBar({
       <div>
         <button
           type="button"
-          onClick={onEstablish}
-          disabled={!canEstablish}
-          aria-label={`Establish Settlement (costs ${ESTABLISH_COST} Prosperity) — keyboard shortcut E`}
+          onClick={game.establishSettlement}
+          disabled={!game.canEstablish}
+          aria-label={`Establish Settlement (costs ${game.establishCostNow} Cacao) — keyboard shortcut E`}
         >
-          Establish Settlement ({ESTABLISH_COST})
+          Establish Settlement ({game.establishCostNow})
         </button>
 
         <button
           type="button"
-          onClick={onAdvanceAge}
-          disabled={!canAdvanceAge}
-          aria-label={`Advance to next Age (requires 2 Citadels and ${AGE_ADVANCE_COST} Prosperity) — keyboard shortcut A`}
+          onClick={game.buyLand}
+          disabled={!game.canBuyLandFlag}
+          aria-label={`Buy Land Parcel (costs ${game.landCostNow} Cacao)`}
+        >
+          Buy Land ({game.landCostNow})
+        </button>
+
+        <button
+          type="button"
+          onClick={game.advanceAge}
+          disabled={!game.canAdvanceAge}
+          aria-label="Advance to next Age — keyboard shortcut A"
         >
           Advance Age
         </button>
+
+        {game.canAscendFlag && !showingLegacies && (
+          <button
+            type="button"
+            onClick={() => setShowingLegacies(true)}
+            aria-label="Ascend — transform your Capital into a permanent legacy"
+          >
+            Ascend
+          </button>
+        )}
 
         {!confirmingReset ? (
           <button
@@ -110,7 +79,7 @@ export function ActionBar({
               type="button"
               onClick={() => {
                 setConfirmingReset(false);
-                onReset();
+                game.resetGame();
               }}
               aria-label="Confirm new game — this will permanently delete your current realm"
             >
@@ -127,6 +96,57 @@ export function ActionBar({
         )}
       </div>
 
+      {showingLegacies && (
+        <div className="legacy-select">
+          <h3>Choose Your Legacy</h3>
+          <p>
+            Your Capital will be transformed into a permanent legacy that
+            carries forward to your next playthrough. Choose wisely — this
+            bonus shapes every future game.
+          </p>
+          {state.prestige.legacies.length > 0 && (
+            <p>
+              Current legacies ({state.prestige.legacies.length}/{3}):{" "}
+              {state.prestige.legacies.map(l => {
+                const def = LEGACIES.find(lg => lg.id === l);
+                return def?.name ?? l;
+              }).join(", ")}
+            </p>
+          )}
+          {state.prestige.legacies.length >= 3 && (
+            <p>
+              You already have 3 legacies. Choosing a new one will replace
+              the last one.
+            </p>
+          )}
+          <ul>
+            {LEGACIES.map((legacy) => (
+              <li key={legacy.id}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowingLegacies(false);
+                    game.ascend(legacy.id as LegacyId);
+                  }}
+                  aria-label={`Choose ${legacy.name} — ${legacy.description}`}
+                >
+                  <strong>{legacy.name}</strong>
+                  <p>{legacy.description}</p>
+                  <p className="flavor-text">Play style: {legacy.playStyle}</p>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={() => setShowingLegacies(false)}
+            aria-label="Cancel ascension"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
       <details className="shortcuts">
         <summary>Keyboard Shortcuts</summary>
         <dl>
@@ -134,60 +154,11 @@ export function ActionBar({
           <dd>Establish Settlement</dd>
           <dt>A</dt>
           <dd>Advance to next Age</dd>
-          <dt>T</dt>
-          <dd>Develop Tent</dd>
-          <dt>H</dt>
-          <dd>Develop Hut</dd>
-          <dt>C</dt>
-          <dd>Develop Cottage</dd>
-          <dt>U</dt>
-          <dd>Develop House</dd>
-          <dt>N</dt>
-          <dd>Develop Manor</dd>
-          <dt>V</dt>
-          <dd>Develop Village</dd>
-          <dt>W</dt>
-          <dd>Develop Town</dd>
-          <dt>I</dt>
-          <dd>Develop City</dd>
-          <dt>F</dt>
-          <dd>Develop into Farm</dd>
-          <dt>M</dt>
-          <dd>Develop into Market</dd>
-          <dt>O</dt>
-          <dd>Develop into Workshop</dd>
-          <dt>L</dt>
-          <dd>Develop into Library</dd>
-          <dt>G</dt>
-          <dd>Develop into Town Hall</dd>
-          <dt>Q</dt>
-          <dd>Develop into Aqueduct</dd>
-          <dt>S</dt>
-          <dd>Develop into Shrine</dd>
-          <dt>B</dt>
-          <dd>Develop into Bank</dd>
-          <dt>P</dt>
-          <dd>Develop into Apothecary</dd>
-          <dt>R</dt>
-          <dd>Develop into Cathedral</dd>
-          <dt>J</dt>
-          <dd>Develop into Embassy</dd>
-          <dt>K</dt>
-          <dd>Develop into Observatory</dd>
-          <dt>X</dt>
-          <dd>Develop into Garden</dd>
-          <dt>Y</dt>
-          <dd>Develop into Laboratory</dd>
-          <dt>Z</dt>
-          <dd>Develop into Hero's Hall</dd>
         </dl>
         <p className="form-help">
-          Shortcuts develop the first eligible stack. Standard level shortcuts
-          (T through I) develop that level using the default progression path.
-          Special building shortcuts (F, M, O, L, G, Q, S, B, P, R, J, K, X, Y, Z)
-          develop the first available standard level stack into that building.
-          Temple, Oracle, and Eternal Spire have no shortcut — use the on-screen
-          buttons. Shortcuts work except when typing in a text field.
+          Shortcuts work except when typing in a text field. All other
+          actions (research, specialize, buy land, ascend) are done via
+          on-screen buttons for clarity.
         </p>
       </details>
     </section>

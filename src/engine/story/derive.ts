@@ -2,22 +2,15 @@
 
 import type { GameEvent } from "../events/GameEvent";
 import type { StoryRecord } from "./types";
-import { TECH_NODES } from "../techtree/definitions";
-import { IMPROVEMENTS } from "../improvements/catalog";
 
 /**
  * Derives StoryRecords from a list of GameEvents.
  *
  * Story records are structured domain data, not prose. The UI decides
  * how to present them.
- *
- * Not every GameEvent produces a StoryRecord — only meaningful milestones
- * are recorded (establishments, discoveries, improvements, capacity increases,
- * age advancements).
  */
 export function deriveStoryRecords(
   events: readonly GameEvent[],
-  turn: number,
 ): StoryRecord[] {
   const records: StoryRecord[] = [];
 
@@ -26,74 +19,80 @@ export function deriveStoryRecords(
       case "SettlementEstablished":
         records.push({
           kind: "SettlementEstablished",
-          turn,
-          level: event.level,
+          turn: event.turn,
+          tier: event.settlementTier,
         });
         break;
-      case "SettlementDeveloped":
+      case "SettlementsUpgraded":
         records.push({
-          kind: "SettlementDeveloped",
-          turn,
-          fromLevel: event.level,
-          toLevel: event.newLevel,
+          kind: "SettlementsUpgraded",
+          turn: event.turn,
+          fromTier: event.fromTier,
+          toTier: event.toTier,
+          researchName: event.researchName,
+        });
+        break;
+      case "SpecializationUnlocked":
+        records.push({
+          kind: "SpecializationUnlocked",
+          turn: event.turn,
+          building: event.building,
+          researchName: event.researchName,
+        });
+        break;
+      case "ResearchCompleted":
+        records.push({
+          kind: "ResearchCompleted",
+          turn: event.turn,
+          researchName: event.researchName,
+        });
+        break;
+      case "SettlementSpecialized":
+        records.push({
+          kind: "SettlementSpecialized",
+          turn: event.turn,
+          building: event.building,
+        });
+        break;
+      case "LandPurchased":
+        records.push({
+          kind: "LandPurchased",
+          turn: event.turn,
+          cost: event.cost,
+        });
+        break;
+      case "AgeAdvanced":
+        records.push({
+          kind: "AgeAdvanced",
+          turn: event.turn,
+          fromAge: event.fromAge,
+          toAge: event.toAge,
+        });
+        break;
+      case "Ascended":
+        records.push({
+          kind: "Ascended",
+          turn: event.turn,
+          legacy: event.legacy,
+          ascensionCount: event.ascensionCount,
+        });
+        break;
+      case "CacaoEarned":
+        records.push({
+          kind: "CacaoEarned",
+          turn: event.turn,
+          amount: event.amount,
           source: event.source,
         });
         break;
-      case "SettlementLevelDiscovered":
-        records.push({
-          kind: "SettlementLevelDiscovered",
-          turn,
-          level: event.level,
-        });
+      case "Error":
+        // Errors don't produce story records
         break;
       case "ImprovementPurchased":
-        records.push({
-          kind: "ImprovementPurchased",
-          turn,
-          improvementId: event.improvementId,
-        });
-        break;
-      case "AgeAdvanced": {
-        const newTechs = TECH_NODES.filter(
-          (n) => n.availableFromAge === event.toAge,
-        ).map((n) => n.id);
-        const newImprovements = IMPROVEMENTS.filter(
-          (i) => i.availableFromAge === event.toAge,
-        ).map((i) => i.id);
-        records.push({
-          kind: "AgeAdvanced",
-          turn,
-          age: event.toAge,
-          newTechsAvailable: newTechs,
-          newImprovementsAvailable: newImprovements,
-        });
-        break;
-      }
-      case "TechUnlocked":
-        records.push({
-          kind: "TechUnlocked",
-          turn,
-          techId: event.techId,
-        });
-        break;
-      // ProsperityEarned, ChainReactionStarted, etc. do not produce
-      // story records — they're too frequent to be historical milestones.
-      default:
+        // TODO: Will be implemented with improvements system
         break;
     }
   }
 
   return records;
-}
-
-/**
- * Derives a CapacityIncreased story record when capacity changes.
- * Called separately because capacity changes are computed in the
- * dispatcher, not emitted as GameEvents directly.
- */
-export function capacityIncreasedRecord(
-  turn: number,
-  newCapacity: number,
-): StoryRecord {
-  return { kind: "CapacityIncreased", turn, newCapacity };
 }
