@@ -2,7 +2,7 @@
 
 import type { GameState } from "../../engine/state/GameState";
 import type { ResearchNode, ResearchId } from "../../engine/research/types";
-import { researchForAge, getResearch, ALL_RESEARCH } from "../../engine/research/definitions";
+import { researchForAge, ALL_RESEARCH } from "../../engine/research/definitions";
 import { canResearch, researchCost } from "../../engine/research/researchAction";
 import { getAge, getAgeByIndex } from "../../engine/ages/definitions";
 import type { GameApi } from "../hooks/useGame";

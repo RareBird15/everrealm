@@ -4,7 +4,6 @@ import { describe, it, expect } from "vitest";
 import {
   AGES,
   getAge,
-  getAgeByIndex,
   nextAge,
   isFinalAge,
 } from "../../../engine/ages/definitions";
@@ -15,21 +14,21 @@ describe("AGES", () => {
   });
 
   it("starts with Founding Age", () => {
-    expect(AGES[0].id).toBe("FoundingAge");
+    expect(AGES[0]?.id).toBe("FoundingAge");
   });
 
   it("ends with Age of Myths", () => {
-    expect(AGES[5].id).toBe("AgeOfMyths");
+    expect(AGES[5]?.id).toBe("AgeOfMyths");
   });
 
   it("has Age of City-States at index 2 (replacing Age of Lords)", () => {
-    expect(AGES[2].id).toBe("AgeOfCityStates");
-    expect(AGES[2].name).toBe("Age of City-States");
+    expect(AGES[2]?.id).toBe("AgeOfCityStates");
+    expect(AGES[2]?.name).toBe("Age of City-States");
   });
 
   it("has Age of Splendor at index 3 (replacing Golden Age)", () => {
-    expect(AGES[3].id).toBe("AgeOfSplendor");
-    expect(AGES[3].name).toBe("Age of Splendor");
+    expect(AGES[3]?.id).toBe("AgeOfSplendor");
+    expect(AGES[3]?.name).toBe("Age of Splendor");
   });
 });
 

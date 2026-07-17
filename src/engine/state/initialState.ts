@@ -79,7 +79,7 @@ export function createInitialState(
     improvements: [],
     cacao: STARTING_CACAO,
     landParcels: STARTING_LAND_PARCELS + landParcelsBonus,
-    completedResearch: research as GameState["completedResearch"],
+    completedResearch: research as unknown as GameState["completedResearch"],
     baseTier,
     story: [],
     turn: 0,

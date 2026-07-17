@@ -6,8 +6,6 @@ import {
   levelIndex,
   nextLevel,
   isMaxLevel,
-  isSpecialBuilding,
-  isStandardLevel,
 } from "../../../engine/settlements/progression";
 
 describe("SETTLEMENT_LEVELS", () => {

@@ -3,18 +3,35 @@ import { describe, it, expect } from "vitest";
 import { createInitialState, effectiveLandParcels } from "../../engine/state/initialState";
 import { reducer } from "../../engine/reducer";
 import { canResearch, researchCost } from "../../engine/research/researchAction";
-import { researchForAge, ALL_RESEARCH, canAdvanceAge, getResearch } from "../../engine/research/definitions";
-import { establishCost, canEstablish } from "../../engine/settlements/establish";
-import { landCost, canBuyLand } from "../../engine/land/buyLand";
+import { ALL_RESEARCH, canAdvanceAge, getResearch } from "../../engine/research/definitions";
+import { canEstablish } from "../../engine/settlements/establish";
+import { canBuyLand } from "../../engine/land/buyLand";
 import { passiveRatePerHour, cacaoPerTurn } from "../../engine/cacao/passive";
 import { isFinalAge } from "../../engine/ages/definitions";
-import type { ResearchId } from "../../engine/research/types";
 import type { SpecialBuilding } from "../../engine/settlements/types";
-import type { GameCommand } from "../../engine/events/GameCommand";
 
-function playGame(maxTurns: number, strategy: string): any[] {
+interface LogEntry {
+  turn: number;
+  cacao: number;
+  turnRate: number;
+  passiveRate?: number;
+  land?: string;
+  landUsed?: number;
+  landTotal?: number;
+  settlements?: number;
+  spec?: number;
+  specialized?: number;
+  age: string;
+  tier?: string;
+  baseTier?: string;
+  research?: number;
+  researchCount?: number;
+  ASCENDED?: boolean;
+}
+
+function playGame(maxTurns: number): LogEntry[] {
   let state = createInitialState("Balance Test");
-  const log: any[] = [];
+  const log: LogEntry[] = [];
   
   for (let turn = 0; turn < maxTurns; turn++) {
     const turnRate = cacaoPerTurn(state);
@@ -103,25 +120,25 @@ function playGame(maxTurns: number, strategy: string): any[] {
 
 describe("Balance: Full Game Playthrough", () => {
   it("plays through 100 turns and logs economy", () => {
-    const log = playGame(100, "research-first");
+    const log = playGame(100);
     
     console.log("\n=== BALANCE LOG ===");
     console.log("Turn | Cacao | TurnRate | Passive | Land | Setts | Spec | Age | Tier | Research");
     console.log("-----|-------|----------|---------|------|-------|------|-----|------|--------");
     for (const entry of log) {
       console.log(
-        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${String(entry.passiveRate).padStart(7)} | ${String(entry.landUsed).padStart(4)}/${entry.landTotal} | ${String(entry.settlements).padStart(5)} | ${String(entry.specialized).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${entry.baseTier.padEnd(10)} | ${entry.researchCount}`
+        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${String(entry.passiveRate).padStart(7)} | ${String(entry.landUsed).padStart(4)}/${(entry.landTotal ?? '')} | ${String(entry.settlements).padStart(5)} | ${String(entry.specialized).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${(entry.baseTier ?? '').padEnd(10)} | ${entry.researchCount}`
       );
     }
     
     // Basic assertions
     expect(log.length).toBeGreaterThan(0);
-    expect(log[0].cacao).toBe(100);
+    expect(log[0]?.cacao).toBe(100);
   });
   
   it("plays through 100 turns specializing aggressively", () => {
     let state = createInitialState("Spec Test");
-    const log: any[] = [];
+    const log: LogEntry[] = [];
 
     for (let turn = 0; turn < 100; turn++) {
       const turnRate = cacaoPerTurn(state);
@@ -201,7 +218,7 @@ describe("Balance: Full Game Playthrough", () => {
     console.log("-----|-------|----------|------|-------|------|-----|------|--------");
     for (const entry of log) {
       console.log(
-        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${String(entry.landUsed).padStart(4)}/${entry.landTotal} | ${String(entry.settlements).padStart(5)} | ${String(entry.specialized).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${entry.baseTier.padEnd(10)} | ${entry.researchCount}`
+        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${String(entry.landUsed).padStart(4)}/${(entry.landTotal ?? '')} | ${String(entry.settlements).padStart(5)} | ${String(entry.specialized).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${(entry.baseTier ?? '').padEnd(10)} | ${entry.researchCount}`
       );
     }
     expect(log.length).toBeGreaterThan(0);

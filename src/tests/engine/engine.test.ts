@@ -52,8 +52,8 @@ describe("Establish Settlement", () => {
     });
 
     expect(newState.settlements).toHaveLength(1);
-    expect(newState.settlements[0].tier).toBe("Tent");
-    expect(newState.settlements[0].specialization).toBeNull();
+    expect(newState.settlements[0]?.tier).toBe("Tent");
+    expect(newState.settlements[0]?.specialization).toBeNull();
     expect(events).toContainEqual(
       expect.objectContaining({ type: "SettlementEstablished" }),
     );
@@ -161,14 +161,14 @@ describe("Specialize Settlement", () => {
       researchId: "agriculture" as ResearchId,
     }).state;
 
-    const settlementId = state.settlements[0].id;
+    const settlementId = state.settlements[0]?.id ?? "";
     const { state: newState, events } = reducer(state, {
       type: "SpecializeSettlement",
       settlementId,
       building: "Farm" as SpecialBuilding,
     });
 
-    expect(newState.settlements[0].specialization).toBe("Farm");
+    expect(newState.settlements.find(s => s.specialization === "Farm")).toBeDefined();
     expect(events).toContainEqual(
       expect.objectContaining({ type: "SettlementSpecialized" }),
     );
@@ -177,7 +177,7 @@ describe("Specialize Settlement", () => {
   it("fails if building not unlocked", () => {
     let state = createInitialState("Test Realm");
     state = reducer(state, { type: "EstablishSettlement" }).state;
-    const settlementId = state.settlements[0].id;
+    const settlementId = state.settlements[0]?.id ?? "";
 
     const { events } = reducer(state, {
       type: "SpecializeSettlement",

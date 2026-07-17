@@ -1,7 +1,7 @@
 // src/engine/settlements/specialize.ts
 
 import type { GameState } from "../state/GameState";
-import type { SpecialBuilding, Settlement } from "./types";
+import type { SpecialBuilding } from "./types";
 import { getResearch } from "../research/definitions";
 import type { GameEvent } from "../events/GameEvent";
 

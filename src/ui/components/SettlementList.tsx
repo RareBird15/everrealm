@@ -1,6 +1,5 @@
 // src/ui/components/SettlementList.tsx
 
-import type { GameState } from "../../engine/state/GameState";
 import type { Settlement, SpecialBuilding } from "../../engine/settlements/types";
 import type { ResearchId } from "../../engine/research/types";
 import { getResearch, ALL_RESEARCH } from "../../engine/research/definitions";

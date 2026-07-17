@@ -5,7 +5,6 @@ import type { ResearchId, ResearchNode } from "./types";
 import { getResearch, meetsPrerequisites, isResearchAvailableForAge } from "./definitions";
 import { topTierUpgradeForAge } from "./definitions";
 import type { GameEvent } from "../events/GameEvent";
-import type { StandardLevel } from "../settlements/types";
 
 /** Discovery reward for completing a research. */
 export const DISCOVERY_REWARD = 25;

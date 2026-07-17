@@ -3,16 +3,33 @@ import { describe, it, expect } from "vitest";
 import { createInitialState, effectiveLandParcels } from "../../engine/state/initialState";
 import { reducer } from "../../engine/reducer";
 import { canResearch, researchCost } from "../../engine/research/researchAction";
-import { researchForAge, ALL_RESEARCH, canAdvanceAge, getResearch } from "../../engine/research/definitions";
-import { establishCost, canEstablish } from "../../engine/settlements/establish";
-import { landCost, canBuyLand } from "../../engine/land/buyLand";
-import { passiveRatePerHour, cacaoPerTurn } from "../../engine/cacao/passive";
+import { ALL_RESEARCH, canAdvanceAge, getResearch } from "../../engine/research/definitions";
+import { canEstablish } from "../../engine/settlements/establish";
+import { canBuyLand } from "../../engine/land/buyLand";
+import { cacaoPerTurn } from "../../engine/cacao/passive";
 import { isFinalAge } from "../../engine/ages/definitions";
-import type { ResearchId } from "../../engine/research/types";
 import type { SpecialBuilding } from "../../engine/settlements/types";
-import type { LegacyId } from "../../engine/prestige/types";
 
-function playGame(maxTurns: number, legacies: string[], strategy: string): any {
+interface LogEntry {
+  turn: number;
+  cacao: number;
+  turnRate: number;
+  passiveRate?: number;
+  land?: string;
+  landUsed?: number;
+  landTotal?: number;
+  settlements?: number;
+  spec?: number;
+  specialized?: number;
+  age: string;
+  tier?: string;
+  baseTier?: string;
+  research?: number;
+  researchCount?: number;
+  ASCENDED?: boolean;
+}
+
+function playGame(maxTurns: number, legacies: string[]): { log: LogEntry[]; ascendedAt: number } {
   let state = createInitialState("Test", [], legacies, legacies.includes("GardenOfEternity") ? 2 : 0);
   if (legacies.includes("FoundersStela")) {
     // FoundersStela auto-researches forestry
@@ -20,7 +37,7 @@ function playGame(maxTurns: number, legacies: string[], strategy: string): any {
   state = { ...state, cacao: 100 };
 
   let specializedCount = 0;
-  const log: any[] = [];
+  const log: LogEntry[] = [];
 
   for (let turn = 0; turn < maxTurns; turn++) {
     const turnRate = cacaoPerTurn(state);
@@ -63,7 +80,7 @@ function playGame(maxTurns: number, legacies: string[], strategy: string): any {
     const availableResearch = ALL_RESEARCH.filter(r => canResearch(state, r.id));
     const canAdv = !isFinalAge(state.age) && canAdvanceAge(state.age, state.completedResearch);
 
-    if (strategy === "balanced") {
+    {
       // 1. Advance if possible
       if (canAdv) {
         state = reducer(state, { type: "AdvanceAge" }).state;
@@ -71,7 +88,7 @@ function playGame(maxTurns: number, legacies: string[], strategy: string): any {
       }
       // 2. Research cheapest available
       if (availableResearch.length > 0) {
-        const cheapest = availableResearch.reduce((min: any, r: any) =>
+        const cheapest = availableResearch.reduce((min, r) =>
           researchCost(state, r) < researchCost(state, min) ? r : min
         );
         if (state.cacao >= researchCost(state, cheapest)) {
@@ -91,7 +108,7 @@ function playGame(maxTurns: number, legacies: string[], strategy: string): any {
           const building = unlocked.find(b => !used.has(b)) ?? unlocked[0];
           state = reducer(state, {
             type: "SpecializeSettlement",
-            settlementId: unspec[0].id,
+            settlementId: unspec[0]!.id,
             building: building as SpecialBuilding,
           }).state;
           specializedCount++;
@@ -124,7 +141,7 @@ function playGame(maxTurns: number, legacies: string[], strategy: string): any {
           if (unspec) {
             state = reducer(state, {
               type: "SpecializeSettlement",
-              settlementId: unspec.id,
+              settlementId: unspec!.id,
               building: unlocked[0] as SpecialBuilding,
             }).state;
             continue;
@@ -155,7 +172,7 @@ const LEGACIES: { id: string, name: string }[] = [
 describe("Balance: Legacy Comparison", () => {
   for (const legacy of LEGACIES) {
     it(`completes a run with ${legacy.name}`, () => {
-      const { log, ascendedAt } = playGame(200, [legacy.id], "balanced");
+      const { log, ascendedAt } = playGame(200, [legacy.id]);
 
       console.log(`\n=== ${legacy.name} ===`);
       console.log(`Ascended: ${ascendedAt > 0 ? "YES at turn " + ascendedAt : "NO"}`);
@@ -163,7 +180,7 @@ describe("Balance: Legacy Comparison", () => {
       console.log("-----|-------|----------|------|------|-----|------|--------");
       for (const entry of log) {
         console.log(
-          `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${entry.land.padStart(5)} | ${String(entry.spec).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${entry.tier.padEnd(10)} | ${entry.research}${entry.ASCENDED ? " ← ASCENDED" : ""}`
+          `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${(entry.land ?? '').padStart(5)} | ${String(entry.spec).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${(entry.tier ?? '').padEnd(10)} | ${entry.research}${entry.ASCENDED ? " ← ASCENDED" : ""}`
         );
       }
 
@@ -175,9 +192,8 @@ describe("Balance: Legacy Comparison", () => {
     // Simulate a player who has ascended 3 times and has all 3 legacies:
     // Eternal Pyramid, Founders' Stela, Garden of Eternity
     const { log, ascendedAt } = playGame(200,
-      ["EternalPyramid", "FoundersStela", "GardenOfEternity"],
-      "balanced"
-    );
+        ["EternalPyramid", "FoundersStela", "GardenOfEternity"],
+      );
 
     console.log("\n=== 3 STACKED LEGACIES ===");
     console.log("Legacies: Eternal Pyramid + Founders' Stela + Garden of Eternity");
@@ -186,7 +202,7 @@ describe("Balance: Legacy Comparison", () => {
     console.log("-----|-------|----------|------|------|-----|------|--------");
     for (const entry of log) {
       console.log(
-        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${entry.land.padStart(5)} | ${String(entry.spec).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${entry.tier.padEnd(10)} | ${entry.research}${entry.ASCENDED ? " ← ASCENDED" : ""}`
+        `${String(entry.turn).padStart(4)} | ${String(entry.cacao).padStart(5)} | ${String(entry.turnRate).padStart(8)} | ${(entry.land ?? '').padStart(5)} | ${String(entry.spec).padStart(4)} | ${entry.age.substring(0, 12).padEnd(12)} | ${(entry.tier ?? '').padEnd(10)} | ${entry.research}${entry.ASCENDED ? " ← ASCENDED" : ""}`
       );
     }
 
@@ -197,9 +213,9 @@ describe("Balance: Legacy Comparison", () => {
   });
 
   it("compares all legacies", () => {
-    const results: any[] = [];
+    const results: { legacy: string; ascendedAt: number; finalTurn: number; finalCacao: number; finalTurnRate: number; researchCount: number }[] = [];
     for (const legacy of LEGACIES) {
-      const { ascendedAt, log } = playGame(200, [legacy.id], "balanced");
+      const { ascendedAt, log } = playGame(200, [legacy.id]);
       const final = log[log.length - 1];
       results.push({
         legacy: legacy.name,
@@ -214,8 +230,7 @@ describe("Balance: Legacy Comparison", () => {
     // Add the 3-legacy combo
     {
       const { ascendedAt, log } = playGame(200,
-        ["EternalPyramid", "FoundersStela", "GardenOfEternity"],
-        "balanced"
+        ["EternalPyramid", "FoundersStela", "GardenOfEternity"]
       );
       const final = log[log.length - 1];
       results.push({

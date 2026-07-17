@@ -6,7 +6,6 @@ import {
   researchForAge,
   getResearch,
   canAdvanceAge,
-  topTierUpgradeForAge,
 } from "../../../engine/research/definitions";
 import type { ResearchId } from "../../../engine/research/types";
 

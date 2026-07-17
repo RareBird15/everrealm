@@ -1,7 +1,7 @@
 // src/engine/ages/advance.ts
 
 import type { GameState } from "../state/GameState";
-import { nextAge, getAge } from "./definitions";
+import { nextAge } from "./definitions";
 import { canAdvanceAge } from "../research/definitions";
 import type { GameEvent } from "../events/GameEvent";
 

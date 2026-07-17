@@ -3,7 +3,6 @@
 import type { AgeId } from "../ages/types";
 import { getAge } from "../ages/definitions";
 import type { ResearchId, ResearchNode } from "./types";
-import type { StandardLevel, SpecialBuilding } from "../settlements/types";
 
 // ── Balance constants ──
 
