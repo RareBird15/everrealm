@@ -5,6 +5,7 @@ import type { GameApi } from "../hooks/useGame";
 import { useAnnouncements } from "../hooks/useAnnouncements";
 import { RealmSummary } from "../components/RealmSummary";
 import { SettlementList } from "../components/SettlementList";
+import { BatchActions } from "../components/BatchActions";
 import { ResearchList } from "../components/ResearchList";
 import { StoryLog } from "../components/StoryLog";
 import { ActionBar } from "../components/ActionBar";
@@ -99,6 +100,8 @@ export function GameScreen({ game }: Props) {
       <ActionBar game={game} />
 
       <SettlementList game={game} />
+
+      <BatchActions game={game} />
 
       <ResearchList game={game} />
 
