@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { GameApi } from "../hooks/useGame";
 import { useAnnouncements } from "../hooks/useAnnouncements";
+import { useSoundEffects } from "../hooks/useSoundEffects";
 import { RealmSummary } from "../components/RealmSummary";
 import { SettlementList } from "../components/SettlementList";
 import { BatchActions } from "../components/BatchActions";
@@ -38,6 +39,7 @@ function getOnboardingTip(turn: number, state: GameState): string | null {
 
 export function GameScreen({ game }: Props) {
   const announcements = useAnnouncements(game.state);
+  useSoundEffects(game.state);
   const gameRef = useRef(game);
   gameRef.current = game;
 

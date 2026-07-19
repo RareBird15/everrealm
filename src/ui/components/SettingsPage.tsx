@@ -1,6 +1,7 @@
 // src/ui/components/SettingsPage.tsx
 
 import { useState, useEffect } from "react";
+import { isSoundEnabled, setSoundEnabled } from "../sounds";
 
 type Theme = "dark" | "light";
 type TextSize = "normal" | "large" | "extra-large";
@@ -39,6 +40,7 @@ export function applyAppearanceSettings(theme: Theme, textSize: TextSize) {
 export function SettingsPage() {
   const [theme, setTheme] = useState<Theme>(getSavedTheme);
   const [textSize, setTextSize] = useState<TextSize>(getSavedTextSize);
+  const [soundEnabled, setSoundEnabledState] = useState<boolean>(isSoundEnabled);
 
   // Apply settings whenever they change
   useEffect(() => {
@@ -50,6 +52,12 @@ export function SettingsPage() {
       // Ignore storage errors
     }
   }, [theme, textSize]);
+
+  function toggleSound() {
+    const next = !soundEnabled;
+    setSoundEnabledState(next);
+    setSoundEnabled(next);
+  }
 
   return (
     <details>
@@ -95,6 +103,28 @@ export function SettingsPage() {
             </select>
           </dd>
         </dl>
+
+        <h3>Sound</h3>
+        <dl>
+          <dt>
+            <label htmlFor="sound-toggle">Sound Effects</label>
+          </dt>
+          <dd>
+            <input
+              type="checkbox"
+              id="sound-toggle"
+              checked={soundEnabled}
+              onChange={toggleSound}
+            />{" "}
+            {soundEnabled ? "On" : "Off (default)"}
+          </dd>
+        </dl>
+        <p className="form-help">
+          Plays a short tone when you take actions like establishing
+          settlements, completing research, and advancing Ages. No spatial
+          audio, no background music. Screen reader announcements are never
+          affected by this setting.
+        </p>
 
         <h3>Keyboard Shortcuts</h3>
         <dl>

@@ -34,6 +34,12 @@ export function AboutPage() {
           spatial reasoning, no color-coded information. Works with NVDA, JAWS,
           VoiceOver, and Orca.
         </p>
+        <p>
+          Optional sound effects can be enabled in Settings. They play short
+          tones for key actions — no spatial audio, no background music, and
+          they never replace screen reader announcements. Sound is off by
+          default.
+        </p>
 
         <h3>How to Play</h3>
         <dl>
