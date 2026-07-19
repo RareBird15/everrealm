@@ -108,10 +108,15 @@ export function BatchActions({ game }: Props) {
             <option value="" disabled>Select a building...</option>
             {unlockedBuildings.map((building) => (
               <option key={building} value={building}>
-                {building} — {getBuildingDescription(building).substring(0, 60)}...
+                {building}
               </option>
             ))}
           </select>
+          {selectedBuilding && (
+            <p className="form-help">
+              {getBuildingDescription(selectedBuilding)}
+            </p>
+          )}
 
           <label htmlFor="batch-quantity">Quantity (max {unspecialized.length})</label>
           <input
