@@ -78,10 +78,14 @@ function SettlementGroupRow({ group }: { readonly group: SettlementGroup }) {
         {isSpecial && ` (${group.specialization})`}
       </span>
       {isSpecial && buildingDesc && (
-        <span className="settlement-description">{buildingDesc}</span>
+        <>
+          {" — "}
+          <span className="settlement-description">{buildingDesc}</span>
+        </>
       )}
       {isSpecial && (
         <span aria-label="Specialized building — cannot upgrade further">
+          {" "}
           (Specialized)
         </span>
       )}
