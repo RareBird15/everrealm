@@ -13,21 +13,38 @@ export const DISCOVERY_REWARD = 25;
 export const AGE_ADVANCE_REWARD = 100;
 
 /**
- * Returns the actual cost of a research, accounting for Alchemist's Lab
- * reductions and legacy bonuses.
+ * Returns the actual cost of a research, accounting for settlement count
+ * scaling, Alchemist's Lab reductions, and legacy bonuses.
+ *
+ * Research costs scale with the number of settlements because settlement
+ * upgrades affect ALL settlements simultaneously. Researching Forestry
+ * for 3 Tents is cheap; researching it for 300 settlements is not.
+ *
+ * Scaling formula: baseCost * (1 + max(0, settlementCount - 10) * SCALE_FACTOR)
+ * At 1-10 settlements: base cost (early game unchanged)
+ * At 20 settlements: 1.3x base cost
+ * At 50 settlements: 2.2x base cost
+ * At 100 settlements: 3.7x base cost
+ * At 1000 settlements: 30.8x base cost
+ * At 3000 settlements: 90.8x base cost
+ *
+ * This prevents the late-game economy from trivializing research costs.
  */
+const RESEARCH_SETTLEMENT_SCALE = 0.03;
+
 export function researchCost(state: GameState, node: ResearchNode): number {
   let cost = node.cost;
+
+  // Scale with settlement count — upgrading more settlements costs more.
+  // First 10 settlements are free of scaling to preserve early-game balance.
+  const settlementCount = state.settlements.length;
+  cost = Math.floor(cost * (1 + Math.max(0, settlementCount - 10) * RESEARCH_SETTLEMENT_SCALE));
 
   // Each Alchemist's Lab reduces all research costs by 5%
   const labs = state.settlements.filter(
     (s) => s.specialization === "AlchemistsLab",
   ).length;
   cost = Math.floor(cost * (1 - labs * 0.05));
-
-  // Jade Palace legacy: specializations are 25% stronger
-  // This doesn't reduce research cost but makes specialization bonuses stronger
-  // (applied at the specialization effect calculation, not here)
 
   return Math.max(1, cost);
 }

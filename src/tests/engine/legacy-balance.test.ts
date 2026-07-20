@@ -117,11 +117,14 @@ function playGame(maxTurns: number, legacies: string[]): { log: LogEntry[]; asce
       }
       // 4. Buy land if full
       if (state.settlements.length >= effectiveLandParcels(state) - 1 && canBuyLand(state)) {
-        state = reducer(state, { type: "BuyLand" }).state;
-        continue;
+        // Don't expand beyond 50 settlements — research costs scale with settlement count
+        if (state.settlements.length < 50) {
+          state = reducer(state, { type: "BuyLand" }).state;
+          continue;
+        }
       }
-      // 5. Establish
-      if (canEstablish(state)) {
+      // 5. Establish (but don't over-expand)
+      if (canEstablish(state) && state.settlements.length < 50) {
         state = reducer(state, { type: "EstablishSettlement" }).state;
         continue;
       }
@@ -172,7 +175,7 @@ const LEGACIES: { id: string, name: string }[] = [
 describe("Balance: Legacy Comparison", () => {
   for (const legacy of LEGACIES) {
     it(`completes a run with ${legacy.name}`, () => {
-      const { log, ascendedAt } = playGame(200, [legacy.id]);
+      const { log, ascendedAt } = playGame(300, [legacy.id]);
 
       console.log(`\n=== ${legacy.name} ===`);
       console.log(`Ascended: ${ascendedAt > 0 ? "YES at turn " + ascendedAt : "NO"}`);
@@ -191,7 +194,7 @@ describe("Balance: Legacy Comparison", () => {
   it("tests a run with 3 stacked legacies", () => {
     // Simulate a player who has ascended 3 times and has all 3 legacies:
     // Eternal Pyramid, Founders' Stela, Garden of Eternity
-    const { log, ascendedAt } = playGame(200,
+    const { log, ascendedAt } = playGame(300,
         ["EternalPyramid", "FoundersStela", "GardenOfEternity"],
       );
 
@@ -215,7 +218,7 @@ describe("Balance: Legacy Comparison", () => {
   it("compares all legacies", () => {
     const results: { legacy: string; ascendedAt: number; finalTurn: number; finalCacao: number; finalTurnRate: number; researchCount: number }[] = [];
     for (const legacy of LEGACIES) {
-      const { ascendedAt, log } = playGame(200, [legacy.id]);
+      const { ascendedAt, log } = playGame(300, [legacy.id]);
       const final = log[log.length - 1];
       results.push({
         legacy: legacy.name,
@@ -229,7 +232,7 @@ describe("Balance: Legacy Comparison", () => {
 
     // Add the 3-legacy combo
     {
-      const { ascendedAt, log } = playGame(200,
+      const { ascendedAt, log } = playGame(300,
         ["EternalPyramid", "FoundersStela", "GardenOfEternity"]
       );
       const final = log[log.length - 1];

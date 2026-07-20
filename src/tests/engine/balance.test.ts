@@ -76,14 +76,14 @@ function playGame(maxTurns: number): LogEntry[] {
       }
     }
     
-    // Buy land if we're close to capacity
-    if (landUsed >= landTotal - 1 && canBuyLand(state)) {
+    // Buy land if we're close to capacity (but don't over-expand)
+    if (landUsed >= landTotal - 1 && canBuyLand(state) && state.settlements.length < 50) {
       state = reducer(state, { type: "BuyLand" }).state;
       continue;
     }
     
-    // Establish if we have space
-    if (canEstablish(state)) {
+    // Establish if we have space (but don't over-expand)
+    if (canEstablish(state) && state.settlements.length < 50) {
       state = reducer(state, { type: "EstablishSettlement" }).state;
       continue;
     }
