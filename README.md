@@ -1,10 +1,14 @@
 # Everrealm
 
-A peaceful kingdom-building game designed from the ground up for screen readers.
+A calm, screen-reader-first kingdom-building game set in a fictional
+Mesoamerican world. Build settlements, research upgrades, specialize your
+communities, send pochteca on trade expeditions, and guide your realm through
+six Ages — then ascend into a permanent legacy that shapes your next
+playthrough.
 
-Build settlements, develop them through merge mechanics, invest in lasting
-improvements, and guide your civilization through successive Ages. Everrealm
-is equally enjoyable for blind and sighted players.
+Everrealm is designed for screen readers from the ground up while remaining
+enjoyable for everyone. No merging. No clicking 256 times. Decisions, not
+repetition.
 
 ## Play
 
@@ -17,23 +21,39 @@ saved locally.
 
 - **Screen-reader first.** Semantic HTML, ARIA live regions, keyboard
   shortcuts for every common action. No visual information is required to play.
-- **Calm strategy.** No timers, no reflexes, no fail states. Every action is
+  Works with NVDA, JAWS, VoiceOver, and Orca.
+- **Calm strategy.** No combat, no timers, no fail states. Every action is
   initiated by the player.
-- **Merge mechanics.** Develop settlements by combining pairs into higher-level
-  ones. Chain reactions cascade automatically (unless you have branching
-  options available).
-- **Tech tree.** Unlock discoveries that enable special buildings with new
-  mechanical effects: Libraries that boost discovery rewards, Town Halls that
-  expand capacity, Aqueducts that multiply your passive income.
-- **Realm improvements.** Permanent investments that change how your realm
-  plays: Stone Roads for passive income, Guild Halls for capacity, Monuments
-  for stronger rewards.
+- **Research-based progression.** Research upgrades that transform ALL
+  settlements at once. No merge mechanics, no repetitive clicking.
+- **Specialization.** Choose to upgrade a settlement or lock it as a
+  prosperity building. Each Age introduces new specializations that interact
+  with each other.
+- **Pochteca Expeditions.** Send long-distance merchants to 8 destinations
+  that unlock by Age. Each expedition returns with a reward — production
+  bonuses, research discounts, or land parcels. (v1.1.0)
 - **Six Ages.** Guide your civilization from the Founding Age through the Age
-  of Myths.
+  of Myths. Each Age adds one new mechanic layer.
+- **Prestige system.** Ascend your Capital into one of five legacies that
+  carry forward as permanent bonuses to your next playthrough.
+- **Realm Chronicles.** At ascension, the game generates a prose narrative of
+  your realm's history — shareable, under 500 words. (v1.1.0)
 - **Realm history.** A chronological story log records every milestone in your
   realm's history.
-- **Offline progression.** Your realm earns Prosperity while you're away. Come
-  back to a "While you were away" summary.
+- **Offline progression.** Your realm earns Cacao while you're away.
+- **Currency: Cacao.** Cacao beans, used as currency throughout Mesoamerica,
+  ground the economy in the setting.
+
+## Game Actions
+
+| Action | Description |
+|--------|-------------|
+| **Establish Settlement** | Spend Cacao, use a land parcel, create a settlement |
+| **Research Upgrade** | Spend Cacao, all settlements upgrade to next tier OR unlock a specialization |
+| **Specialize Settlement** | Lock a settlement at its current tier as a prosperity building |
+| **Buy Land** | Spend Cacao, gain a land parcel |
+| **Advance Age** | Requires top-tier tech researched; unlocks new content |
+| **Send Pochteca Expedition** | Spend Cacao, send merchants to a destination; returns after N turns with a reward |
 
 ## Keyboard Shortcuts
 
@@ -41,24 +61,9 @@ saved locally.
 |-----|--------|
 | `E` | Establish Settlement |
 | `A` | Advance to next Age |
-| `T` | Develop Tent |
-| `H` | Develop Hut |
-| `C` | Develop Cottage |
-| `U` | Develop House |
-| `N` | Develop Manor |
-| `V` | Develop Village |
-| `W` | Develop Town |
-| `I` | Develop City |
-| `F` | Develop into Farm |
-| `M` | Develop into Market |
-| `O` | Develop into Workshop |
-| `L` | Develop into Library |
-| `G` | Develop into Town Hall |
-| `Q` | Develop into Aqueduct |
 
-Shortcuts develop the first eligible stack. Special building shortcuts use
-the first available standard level stack that meets the building's minimum
-source level requirement.
+All other actions (research, specialize, buy land, send expedition, ascend) are
+done via on-screen buttons for clarity.
 
 ## Tech Stack
 
@@ -87,14 +92,18 @@ npm run typecheck  # Type check
 src/
   engine/          # Game logic (no React dependencies)
     ages/          # Age definitions and advancement
+    cacao/         # Currency — passive and turn-based income
+    expeditions/   # Pochteca expedition system (v1.1.0)
     improvements/  # Realm improvement catalog and effects
-    prosperity/    # Resource earning, spending, passive income
-    settlements/   # Settlement types, progression, merging, chain reactions
-    techtree/      # Tech tree definitions and prerequisites
-    story/         # Story record derivation from game events
+    land/          # Land parcel system
+    prestige/      # Ascension and legacy system
+    research/      # Research tree definitions and progression
+    settlements/   # Settlement types, progression, specialization
+    state/         # Game state and initial state factory
+    story/         # Story records, chronicle generation (v1.1.0)
   ui/              # React components and hooks
   accessibility/   # ARIA live regions, announcements
-  storage/         # Save/load (localStorage with migration)
+  storage/         # Save/load (localStorage with backward compatibility)
   tests/           # Engine and UI tests
 ```
 
