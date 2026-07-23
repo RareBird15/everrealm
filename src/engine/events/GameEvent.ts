@@ -82,6 +82,25 @@ export type GameEvent =
       source: string;
     }
   | {
+      type: "ExpeditionSent";
+      turn: number;
+      destination: string;
+      cost: number;
+      turnsToComplete: number;
+    }
+  | {
+      type: "ExpeditionReturned";
+      turn: number;
+      destination: string;
+      reward: string;
+      rewardDescription: string;
+    }
+  | {
+      type: "ExpeditionBonusExpired";
+      turn: number;
+      bonusType: string;
+    }
+  | {
       type: "Error";
       turn: number;
       message: string;

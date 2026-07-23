@@ -59,4 +59,21 @@ export type StoryRecord =
       turn: number;
       amount: number;
       source: string;
+    }
+  | {
+      kind: "ExpeditionSent";
+      turn: number;
+      destination: string;
+      cost: number;
+    }
+  | {
+      kind: "ExpeditionReturned";
+      turn: number;
+      destination: string;
+      rewardDescription: string;
+    }
+  | {
+      kind: "ExpeditionBonusExpired";
+      turn: number;
+      bonusType: string;
     };

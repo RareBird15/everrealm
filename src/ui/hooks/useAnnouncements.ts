@@ -15,6 +15,11 @@ import { getLegacy } from "../../engine/prestige/definitions";
  *
  * The hook compares state.turn and state.story.length to detect when
  * a new command has been processed.
+ *
+ * v1.1.0: Changed to announce ALL new story records since the last check,
+ * not just records matching the current turn. This ensures expedition
+ * return events (which fire on the old turn before the command increments
+ * it) are announced alongside the command's own events.
  */
 export function useAnnouncements(state: GameState): string[] {
   const [announcements, setAnnouncements] = useState<string[]>([]);
@@ -31,30 +36,17 @@ export function useAnnouncements(state: GameState): string[] {
       return;
     }
 
+    // Collect all new story records since the last check.
+    // This includes both expedition/pre-turn events (old turn number)
+    // and the command's events (new turn number).
+    const newRecords = state.story.slice(prevStoryLen.current);
+
     prevTurn.current = state.turn;
     prevStoryLen.current = state.story.length;
 
-    // Find all story records from the current turn
-    const recentRecords = state.story.filter(
-      (r) => r.turn === state.turn,
-    );
+    if (newRecords.length === 0) return;
 
-    // If no records match the current turn, try the previous turn
-    // (passive income events use the old turn number)
-    if (recentRecords.length === 0) {
-      const prevTurnRecords = state.story.filter(
-        (r) => r.turn === state.turn - 1,
-      );
-      if (prevTurnRecords.length > 0) {
-        const newAnnouncements = prevTurnRecords
-          .slice(prevTurnRecords.length > 1 ? prevTurnRecords.length - 1 : 0)
-          .map((record) => announceRecord(record));
-        setAnnouncements(newAnnouncements);
-      }
-      return;
-    }
-
-    const newAnnouncements = recentRecords.map((record) =>
+    const newAnnouncements = newRecords.map((record) =>
       announceRecord(record),
     );
 
@@ -88,5 +80,11 @@ function announceRecord(record: StoryRecord): string {
     }
     case "CacaoEarned":
       return `+${record.amount} Cacao from ${record.source}.`;
+    case "ExpeditionSent":
+      return `Turn ${record.turn}: Pochteca departed for ${record.destination}. ${record.cost} Cacao invested.`;
+    case "ExpeditionReturned":
+      return `Turn ${record.turn}: Pochteca returned from ${record.destination}. They ${record.rewardDescription}.`;
+    case "ExpeditionBonusExpired":
+      return `Turn ${record.turn}: An expedition bonus has expired (${record.bonusType}).`;
   }
 }

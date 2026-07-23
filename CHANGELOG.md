@@ -5,6 +5,47 @@ All notable changes to Everrealm will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] — 2026-07-22
+
+### Added
+- **Pochteca Expeditions.** A new action — Send Pochteca Expedition — lets players spend Cacao to send long-distance merchants to 8 destinations that unlock progressively by Age. Each expedition has a cost, a travel time in turns, and two possible rewards (50/50). Rewards include production bonuses, research cost reductions, lump-sum Cacao, and land parcels. Maximum 2 concurrent expeditions. Expedition bonuses integrate directly into the economy: production multipliers boost Cacao per turn, research discounts reduce all research costs, and flat income adds per turn. This is the sixth game action, directly addressing player feedback that the game needed more to do after completion.
+- **Realm Chronicles.** When the player ascends, the game now generates a prose narrative of their realm's history. The chronicle weaves together research completed, settlements built, specializations chosen, expeditions sent, and turns taken into a shareable story under 500 words. The chronicle appears on a new screen after ascension with Copy, View Past Chronicles, and Begin New Realm buttons. Chronicles are saved in `prestige.chronicles` and persist across playthroughs.
+- **ExpeditionPanel UI component.** New section in the game screen with a destination dropdown, detail view showing cost/turns/possible rewards, pending expeditions list, and active bonuses list. Appears starting from the Age of Growth.
+- **ChronicleScreen UI.** New post-ascension screen displaying the generated chronicle with clipboard copy support.
+- **CSS styles** for expedition panel, chronicle screen, select dropdowns, and legacy selection.
+- **Tests** for expedition sending, resolution, ticking, destination availability, story records, and chronicle generation (15 new tests, 104 total).
+
+### Changed
+- **Spec updated.** Game Actions section updated from 5 to 6 actions. New Part V (Pochteca Expeditions) and Part VI (Realm Chronicles) added to the design spec. All subsequent parts renumbered.
+- **Save backward compatibility.** Older saves from v1.0.x are automatically backfilled with empty expedition arrays and chronicles. No save migration required — existing saves load without issues.
+
+---
+
+## [1.0.2] — 2026-07-19
+
+### Fixed
+- **Research cost scaling.** Research costs now scale with settlement count to prevent blitzing. First 10 settlements: base cost. 50 settlements: 2.2x. 100: 3.7x. 1000+: 30x+. A focused realm progresses faster than one that expands recklessly.
+- **Batch specialize combo box descriptions.** Building type dropdown was truncating descriptions to 60 characters. Now shows just the building name in the dropdown, with full description below when selected.
+
+---
+
+## [1.0.1] — 2026-07-19
+
+### Fixed
+- **Settlement list accessibility.** Late-game settlement lists with thousands of entries were rendering one line per settlement. Settlements are now grouped by tier and specialization with a count, reducing 3,000+ lines to about 15.
+
+---
+
+## [1.0.0] — 2026-07-19
+
+### Added
+- **Complete v0.3 redesign.** Removed merge mechanic, chain reactions, and settlement stacks. Added research-based upgrades, land parcels, specialization locks, Age-layered mechanics, synergy system, unique power buildings, and prestige system with legacy slots.
+- **Sound effects.** Web Audio API tones for key events, off by default.
+- **Theme and text size settings.** Dark/light theme toggle and normal/large/extra-large text sizes, saved to localStorage.
+- **About page** with game info and credits.
+
+---
+
 ## [0.2.0] — 2026-07-14
 
 ### Added

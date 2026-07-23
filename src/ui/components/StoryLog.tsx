@@ -32,6 +32,12 @@ function storyText(record: StoryRecord): string {
     }
     case "CacaoEarned":
       return `Turn ${record.turn}: +${record.amount} Cacao from ${record.source}.`;
+    case "ExpeditionSent":
+      return `Turn ${record.turn}: Pochteca departed for ${record.destination}. ${record.cost} Cacao invested.`;
+    case "ExpeditionReturned":
+      return `Turn ${record.turn}: Pochteca returned from ${record.destination}. They ${record.rewardDescription}.`;
+    case "ExpeditionBonusExpired":
+      return `Turn ${record.turn}: An expedition bonus has expired (${record.bonusType}).`;
   }
 }
 

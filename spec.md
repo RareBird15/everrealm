@@ -214,7 +214,7 @@ To advance to the next Age, the player must research the top-tier technology
 for their current Age. This replaces the "2 Citadels" gate from the previous
 design.
 
-### Game Actions (5)
+### Game Actions (6)
 
 | Action | Description |
 |--------|-------------|
@@ -223,6 +223,7 @@ design.
 | **Specialize Settlement** | Choose a settlement, lock it at current tier, it becomes a prosperity building |
 | **Buy Land** | Spend cacao, gain a land parcel |
 | **Advance Age** | Requires top-tier tech researched; unlocks new content |
+| **Send Pochteca Expedition** | Spend cacao, send merchants to a destination; returns after N turns with a reward (v1.1.0) |
 
 ### Turn Structure
 
@@ -360,7 +361,103 @@ of 3 bonuses create different play styles and strategic decisions.
 
 ---
 
-## Part V – Age Layering Summary
+## Part V – Pochteca Expeditions (v1.1.0)
+
+### Overview
+
+Pochteca are long-distance merchant-diplomats who travel beyond the realm's
+borders to trade for luxury goods and bring back knowledge. This system
+adds a new action — Send Pochteca Expedition — that gives players an
+active strategic sink for excess Cacao.
+
+### How It Works
+
+The player spends Cacao to send an expedition to a destination. Each
+destination has a cost, a travel time in turns, and two possible rewards
+(50/50 chance). The player sees the reward pool but not the exact outcome.
+After the required number of turns, the expedition returns and its reward
+is applied automatically.
+
+### Constraints
+
+- Maximum 2 concurrent expeditions
+- Destinations unlock by Age — more distant and rewarding locations
+  become available as the realm advances
+- The reward is determined at resolution, not at send time
+
+### Destinations by Age
+
+| Age | Destination | Cost | Turns | Possible Rewards |
+|-----|-----------|------|-------|-----------------|
+| Growth | Lowland Forests | 50 | 8 | +8% production (40 turns) or +40 Cacao |
+| Growth | Highland Quarries | 80 | 10 | +12% production (40 turns) or +1 land parcel |
+| City-States | Coastal Ports | 150 | 12 | +10% production (50 turns) or -15% research costs (30 turns) |
+| City-States | Mountain Passes | 200 | 15 | +1 land parcel or +100 Cacao |
+| Splendor | Distant Kingdoms | 400 | 20 | +15% production (60 turns) or -20% research costs (40 turns) |
+| Splendor | Jungle Trade Routes | 350 | 18 | +5% production (80 turns) or +250 Cacao |
+| Legends | Mythic Lands | 800 | 25 | +20% production (80 turns) or -25% research costs (50 turns) |
+| Myths | Spirit Realm | 1500 | 30 | +25% production (100 turns) or -30% research costs (60 turns) |
+
+### Reward Types
+
+- **Production:** Multiplies Cacao per turn for a duration
+- **Research discount:** Reduces all research costs for a duration
+- **Lump sum:** Instant Cacao
+- **Land:** Instant land parcels
+
+### Cultural Grounding
+
+Pochteca were real long-distance merchants in Aztec society who traveled
+beyond the empire's borders to trade for obsidian, jade, turquoise, and
+cacao. They also served as spies and emissaries. The Market specialization
+already references them in its description. This system extends that
+reference into a full mechanic.
+
+---
+
+## Part VI – Realm Chronicles (v1.1.0)
+
+### Overview
+
+When the player ascends, the game generates a prose narrative of their
+realm's history. The chronicle is displayed on a new screen after
+ascension and can be copied for sharing.
+
+### How It Works
+
+The chronicle generator takes the final game state — research completed,
+settlements built, specializations chosen, expeditions sent, turns taken —
+and weaves them into a multi-paragraph narrative. The chronicle is:
+
+- **Under 500 words** — short enough to share in a forum post
+- **Free of system language** — no "cacao," "turns," or "tiers" in the prose
+- **Reflective of actual choices** — mentions research, specialization,
+  expeditions, and expansion
+- **Deterministic** — same state always produces the same chronicle
+
+### Chronicle Structure
+
+1. **Opening:** Realm name and founding moment
+2. **One paragraph per Age:** Key research and developments
+3. **Expedition highlights:** Notable pochteca journeys (if any)
+4. **Final composition:** Settlement count, specializations, realm size
+5. **Ascension and legacy:** The chosen legacy and closing reflection
+
+### Save Format
+
+Chronicles are saved in `prestige.chronicles` as an array of strings,
+newest first. They persist across playthroughs and can be viewed at any
+time.
+
+### Cultural Grounding
+
+Mesoamerican civilizations kept codices — painted books that recorded
+history, tribute rolls, and the deeds of rulers. The chronicle is the
+player's codex, written as narrative rather than data log.
+
+---
+
+## Part VII – Age Layering Summary
 
 Each Age adds one new mechanic layer:
 
@@ -379,7 +476,7 @@ complexity feels earned.
 
 ---
 
-## Part VI – Realm Improvements
+## Part VIII – Realm Improvements
 
 Realm improvements are realm-wide bonuses purchased with cacao. They
 exist alongside the specialization system and provide another way to spend
@@ -391,7 +488,7 @@ improvement definitions will be finalized during implementation.
 
 ---
 
-## Part VII – Open Questions
+## Part IX – Open Questions
 
 The following will be finalized during implementation:
 
@@ -406,7 +503,7 @@ The following will be finalized during implementation:
 
 ---
 
-## Part VIII – Comparison to Previous Design (0.1–0.2.x)
+## Part X – Comparison to Previous Design (0.1–0.2.x)
 
 ### What changed
 
@@ -434,7 +531,7 @@ The following will be finalized during implementation:
 
 ---
 
-## Part IX – Inspiration and Differentiation
+## Part XI – Inspiration and Differentiation
 
 ### Inspired by Evolve Incremental
 

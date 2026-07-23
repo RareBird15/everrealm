@@ -4,9 +4,10 @@ import type { ResearchId } from "../research/types";
 import type { SpecialBuilding } from "../settlements/types";
 import type { ImprovementId } from "../improvements/types";
 import type { LegacyId } from "../prestige/types";
+import type { ExpeditionDestinationId } from "../expeditions/types";
 
 /**
- * The five game actions in v0.3.
+ * The game actions in v0.3 + v1.1.0.
  *
  * Changes from v0.2.x:
  * - Removed: DevelopSettlement (merge mechanic is gone)
@@ -15,6 +16,7 @@ import type { LegacyId } from "../prestige/types";
  * - Added: SpecializeSettlement (lock a settlement for income)
  * - Added: BuyLand (expand land parcels)
  * - Added: Ascend (prestige system)
+ * - v1.1.0: Added SendExpedition (pochteca trade expeditions)
  */
 export type GameCommand =
   | { type: "EstablishSettlement" }
@@ -30,4 +32,5 @@ export type GameCommand =
   | { type: "BuyLand" }
   | { type: "PurchaseImprovement"; improvementId: ImprovementId }
   | { type: "AdvanceAge" }
-  | { type: "Ascend"; legacy: LegacyId };
+  | { type: "Ascend"; legacy: LegacyId }
+  | { type: "SendExpedition"; destination: ExpeditionDestinationId };

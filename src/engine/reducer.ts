@@ -11,13 +11,17 @@ import { advanceAge } from "./ages/advance";
 import { ascend } from "./prestige/ascend";
 import { applyPassiveCacao } from "./cacao/passive";
 import { deriveStoryRecords } from "./story/derive";
+import { tickExpeditions } from "./expeditions/resolve";
+import { sendExpedition } from "./expeditions/sendExpedition";
 import type { ImprovementId } from "./improvements/types";
 
 /**
  * The reducer processes a game command and returns the new state plus
  * any events that occurred.
  *
- * Before each command, passive cacao is applied based on elapsed time.
+ * Before each command, the following are applied in order:
+ * 1. Passive cacao (based on elapsed time)
+ * 2. Expedition ticking (pending expeditions and active bonuses)
  */
 export function reducer(state: GameState, command: GameCommand): {
   state: GameState;
@@ -26,52 +30,59 @@ export function reducer(state: GameState, command: GameCommand): {
   // Apply passive cacao first
   const { state: withPassive, events: passiveEvents } = applyPassiveCacao(state);
 
+  // Tick expeditions (resolve returning ones, expire old bonuses)
+  const { state: withExpeditions, events: expeditionEvents } = tickExpeditions(withPassive);
+
   try {
     let result: { state: GameState; events: GameEvent[] };
 
     switch (command.type) {
       case "EstablishSettlement":
-        result = establishSettlement(withPassive);
+        result = establishSettlement(withExpeditions);
         break;
 
       case "ResearchUpgrade":
-        result = doResearch(withPassive, command.researchId);
+        result = doResearch(withExpeditions, command.researchId);
         break;
 
       case "SpecializeSettlement":
         result = specializeSettlement(
-          withPassive,
+          withExpeditions,
           command.settlementId,
           command.building,
         );
         break;
 
       case "UnspecializeSettlement":
-        result = unspecializeSettlement(withPassive, command.settlementId);
+        result = unspecializeSettlement(withExpeditions, command.settlementId);
         break;
 
       case "BatchSpecialize":
-        result = batchSpecialize(withPassive, command.building, command.count);
+        result = batchSpecialize(withExpeditions, command.building, command.count);
         break;
 
       case "BatchUnspecialize":
-        result = batchUnspecialize(withPassive, command.count);
+        result = batchUnspecialize(withExpeditions, command.count);
         break;
 
       case "BuyLand":
-        result = buyLand(withPassive);
+        result = buyLand(withExpeditions);
         break;
 
       case "PurchaseImprovement":
-        result = purchaseImprovement(withPassive, command.improvementId);
+        result = purchaseImprovement(withExpeditions, command.improvementId);
         break;
 
       case "AdvanceAge":
-        result = advanceAge(withPassive);
+        result = advanceAge(withExpeditions);
         break;
 
       case "Ascend":
-        result = ascend(withPassive, command.legacy);
+        result = ascend(withExpeditions, command.legacy);
+        break;
+
+      case "SendExpedition":
+        result = sendExpedition(withExpeditions, command.destination);
         break;
 
       default:
@@ -79,7 +90,7 @@ export function reducer(state: GameState, command: GameCommand): {
     }
 
     // Derive story records from events and append to state
-    const allEvents = [...passiveEvents, ...result.events];
+    const allEvents = [...passiveEvents, ...expeditionEvents, ...result.events];
     const newStory = deriveStoryRecords(allEvents);
 
     return {
@@ -90,10 +101,17 @@ export function reducer(state: GameState, command: GameCommand): {
       events: allEvents,
     };
   } catch (error) {
+    // Still need to derive story from expedition events even on error
+    const allEvents = [...passiveEvents, ...expeditionEvents];
+    const newStory = deriveStoryRecords(allEvents);
+
     return {
-      state: withPassive,
+      state: {
+        ...withExpeditions,
+        story: [...withExpeditions.story, ...newStory],
+      },
       events: [
-        ...passiveEvents,
+        ...allEvents,
         {
           type: "Error" as const,
           turn: state.turn,

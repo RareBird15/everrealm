@@ -7,6 +7,7 @@ import type { ResearchId } from "../research/types";
 import type { ImprovementId } from "../improvements/types";
 import type { StoryRecord } from "../story/types";
 import type { PrestigeState } from "../prestige/types";
+import type { PendingExpedition, CompletedExpedition, ExpeditionBonus } from "../expeditions/types";
 
 /**
  * The complete game state for Everrealm v0.3.
@@ -18,6 +19,7 @@ import type { PrestigeState } from "../prestige/types";
  * - unlockedTechs renamed to completedResearch
  * - Prestige state added
  * - baseTier tracks the current settlement tier from research
+ * - v1.1.0: Expedition fields added (pendingExpeditions, completedExpeditions, expeditionBonuses)
  */
 export interface GameState {
   readonly version: number;
@@ -60,4 +62,13 @@ export interface GameState {
 
   /** Prestige state — legacies carried from previous playthroughs. */
   readonly prestige: PrestigeState;
+
+  /** v1.1.0: Expeditions currently traveling. */
+  readonly pendingExpeditions: readonly PendingExpedition[];
+
+  /** v1.1.0: Completed expeditions, for chronicle generation. */
+  readonly completedExpeditions: readonly CompletedExpedition[];
+
+  /** v1.1.0: Active temporary bonuses from returned expeditions. */
+  readonly expeditionBonuses: readonly ExpeditionBonus[];
 }

@@ -46,6 +46,17 @@ export function researchCost(state: GameState, node: ResearchNode): number {
   ).length;
   cost = Math.floor(cost * (1 - labs * 0.05));
 
+  // v1.1.0: Expedition research discount bonuses
+  let totalResearchDiscount = 0;
+  for (const bonus of state.expeditionBonuses) {
+    if (bonus.type === "research_discount") {
+      totalResearchDiscount += bonus.magnitude;
+    }
+  }
+  if (totalResearchDiscount > 0) {
+    cost = Math.floor(cost * (1 - Math.min(totalResearchDiscount, 0.75)));
+  }
+
   return Math.max(1, cost);
 }
 

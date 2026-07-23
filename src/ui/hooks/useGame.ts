@@ -6,6 +6,7 @@ import type { GameCommand } from "../../engine/events/GameCommand";
 import type { ResearchId } from "../../engine/research/types";
 import type { SpecialBuilding } from "../../engine/settlements/types";
 import type { LegacyId } from "../../engine/prestige/types";
+import type { ExpeditionDestinationId } from "../../engine/expeditions/types";
 import { createInitialState } from "../../engine/state/initialState";
 import { reducer } from "../../engine/reducer";
 import { saveGame, loadGame, deleteSave } from "../../storage/save";
@@ -15,9 +16,12 @@ import { canBuyLand, landCost } from "../../engine/land/buyLand";
 import { canAscend } from "../../engine/prestige/ascend";
 import { canAdvanceAge } from "../../engine/research/definitions";
 import { passiveRatePerHour, applyPassiveCacao, calculatePassiveCacao, cacaoPerTurn } from "../../engine/cacao/passive";
-import { isFinalAge } from "../../engine/ages/definitions";
+import { isFinalAge, getAge } from "../../engine/ages/definitions";
 import { ALL_RESEARCH } from "../../engine/research/definitions";
 import { effectiveLandParcels } from "../../engine/state/initialState";
+import { canSendExpedition } from "../../engine/expeditions/sendExpedition";
+import { destinationsForAge } from "../../engine/expeditions/definitions";
+import { MAX_CONCURRENT_EXPEDITIONS } from "../../engine/expeditions/types";
 
 export interface GameApi {
   readonly state: GameState;
@@ -48,12 +52,21 @@ export interface GameApi {
   readonly buyLand: () => void;
   readonly advanceAge: () => void;
   readonly ascend: (legacy: LegacyId) => void;
+  readonly sendExpedition: (destination: ExpeditionDestinationId) => void;
   readonly resetGame: () => void;
 
   // Research info
   readonly availableResearch: typeof ALL_RESEARCH;
   readonly establishCostNow: number;
   readonly landCostNow: number;
+
+  // Expedition info
+  readonly availableDestinations: ReturnType<typeof destinationsForAge>;
+  readonly canSendExpeditionFlag: (destination: ExpeditionDestinationId) => boolean;
+  readonly pendingExpeditions: GameState["pendingExpeditions"];
+  readonly activeExpeditionBonuses: GameState["expeditionBonuses"];
+  readonly expeditionSlotsUsed: number;
+  readonly expeditionSlotsMax: number;
 }
 
 export function useGame(): GameApi {
@@ -167,6 +180,13 @@ export function useGame(): GameApi {
     [dispatch],
   );
 
+  const sendExpedition = useCallback(
+    (destination: ExpeditionDestinationId) => {
+      dispatch({ type: "SendExpedition", destination });
+    },
+    [dispatch],
+  );
+
   const setRealmName = useCallback((name: string) => {
     setState((prev) => ({ ...prev, realmName: name }));
   }, []);
@@ -194,6 +214,11 @@ export function useGame(): GameApi {
     canResearch(state, r.id),
   );
 
+  // Expedition derived state
+  const currentAge = getAge(state.age);
+  const availableDestinations = destinationsForAge(currentAge?.index ?? 0);
+  const expeditionSlotsUsed = state.pendingExpeditions.length;
+
   return {
     state,
     error,
@@ -219,9 +244,16 @@ export function useGame(): GameApi {
     buyLand,
     advanceAge,
     ascend,
+    sendExpedition,
     resetGame,
     availableResearch,
     establishCostNow,
     landCostNow,
+    availableDestinations,
+    canSendExpeditionFlag: (dest: ExpeditionDestinationId) => canSendExpedition(state, dest),
+    pendingExpeditions: state.pendingExpeditions,
+    activeExpeditionBonuses: state.expeditionBonuses,
+    expeditionSlotsUsed,
+    expeditionSlotsMax: MAX_CONCURRENT_EXPEDITIONS,
   };
 }

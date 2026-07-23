@@ -85,6 +85,29 @@ export function deriveStoryRecords(
           source: event.source,
         });
         break;
+      case "ExpeditionSent":
+        records.push({
+          kind: "ExpeditionSent",
+          turn: event.turn,
+          destination: event.destination,
+          cost: event.cost,
+        });
+        break;
+      case "ExpeditionReturned":
+        records.push({
+          kind: "ExpeditionReturned",
+          turn: event.turn,
+          destination: event.destination,
+          rewardDescription: event.rewardDescription,
+        });
+        break;
+      case "ExpeditionBonusExpired":
+        records.push({
+          kind: "ExpeditionBonusExpired",
+          turn: event.turn,
+          bonusType: event.bonusType,
+        });
+        break;
       case "Error":
         // Errors don't produce story records
         break;

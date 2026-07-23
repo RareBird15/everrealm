@@ -87,6 +87,10 @@ export function createInitialState(
     prestige: {
       legacies: legacies as GameState["prestige"]["legacies"],
       ascensionCount: 0,
+      chronicles: [],
     },
+    pendingExpeditions: [],
+    completedExpeditions: [],
+    expeditionBonuses: [],
   };
 }

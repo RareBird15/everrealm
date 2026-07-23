@@ -340,3 +340,127 @@ ol li {
   background: rgba(68, 170, 153, 0.1);
   font-style: italic;
 }
+
+/* ── Select dropdowns ── */
+
+select {
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--bg-panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.6rem;
+  max-width: 100%;
+  margin: 0.25rem 0;
+}
+
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* ── Expedition panel ── */
+
+.expedition-send {
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+}
+
+.expedition-details {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(212, 166, 74, 0.05);
+}
+
+.expedition-details p {
+  margin: 0.2rem 0;
+}
+
+.expedition-details ul {
+  margin: 0.25rem 0 0.5rem 1rem;
+}
+
+.expedition-details ul li {
+  padding: 0.25rem 0;
+  border-bottom: none;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+.expedition-pending,
+.expedition-bonuses {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.expedition-pending h3,
+.expedition-bonuses h3 {
+  font-size: 1rem;
+  font-weight: normal;
+  color: var(--accent);
+  margin: 0.25rem 0 0.5rem;
+}
+
+.expedition-pending ul li,
+.expedition-bonuses ul li {
+  padding: 0.3rem 0;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}
+
+/* ── Chronicle screen ── */
+
+.chronicle-text {
+  margin: 1rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  line-height: 1.8;
+}
+
+.chronicle-text p {
+  margin: 0.5rem 0;
+}
+
+.chronicle-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+/* ── Legacy selection ── */
+
+.legacy-select {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+}
+
+.legacy-select ul {
+  margin: 0.5rem 0;
+}
+
+.legacy-select li button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.legacy-select li button p {
+  margin: 0.2rem 0 0;
+  font-size: 0.9em;
+  color: var(--text-muted);
+}

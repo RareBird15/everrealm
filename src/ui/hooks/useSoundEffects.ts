@@ -69,5 +69,11 @@ function mapRecordToSound(record: StoryRecord): SoundEvent | null {
       return "Ascended";
     case "CacaoEarned":
       return null; // Too frequent, skip
+    case "ExpeditionSent":
+      return "SettlementEstablished"; // Reuse a suitable sound for now
+    case "ExpeditionReturned":
+      return "ResearchCompleted"; // Reuse a suitable sound for now
+    case "ExpeditionBonusExpired":
+      return null;
   }
 }

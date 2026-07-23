@@ -56,6 +56,13 @@ export function cacaoPerTurn(state: GameState): number {
   // War Shrine gives active income per turn
   income += countSpecialization(state, "WarShrine") * 5;
 
+  // v1.1.0: Flat income from expedition bonuses
+  for (const bonus of state.expeditionBonuses) {
+    if (bonus.type === "income_flat") {
+      income += bonus.magnitude;
+    }
+  }
+
   // Multipliers (same as clock-based, applied to turn income too)
   income = applyMultipliers(state, income);
 
@@ -84,7 +91,7 @@ export function passiveRatePerHour(state: GameState): number {
 }
 
 /**
- * Applies realm-wide multipliers from specializations and legacies.
+ * Applies realm-wide multipliers from specializations, legacies, and expedition bonuses.
  * Shared between turn-based and clock-based income.
  */
 function applyMultipliers(state: GameState, amount: number): number {
@@ -107,6 +114,13 @@ function applyMultipliers(state: GameState, amount: number): number {
   // Eternal Pyramid legacy: +10%
   if (state.prestige.legacies.includes("EternalPyramid")) {
     amount *= 1.10;
+  }
+
+  // v1.1.0: Expedition production bonuses
+  for (const bonus of state.expeditionBonuses) {
+    if (bonus.type === "production") {
+      amount *= 1 + bonus.magnitude;
+    }
   }
 
   return amount;

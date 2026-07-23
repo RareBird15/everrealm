@@ -5,6 +5,7 @@ import type { LegacyId } from "./types";
 import { getLegacy, MAX_LEGACIES } from "./definitions";
 import { createInitialState } from "../state/initialState";
 import type { GameEvent } from "../events/GameEvent";
+import { generateChronicle } from "../story/generateChronicle";
 
 /** Number of legendary buildings needed to ascend. */
 export const ASCENSION_THRESHOLD = 3;
@@ -70,6 +71,11 @@ export function ascend(state: GameState, legacy: LegacyId): {
 
   const ascensionCount = state.prestige.ascensionCount + 1;
 
+  // v1.1.0: Generate the chronicle before creating the new state
+  const chronicle = generateChronicle(state, legacy);
+  const previousChronicles = state.prestige.chronicles ?? [];
+  const newChronicles = [chronicle, ...previousChronicles];
+
   // Create new game state with legacy bonuses applied
   const landBonus = newLegacies.includes("GardenOfEternity") ? 2 : 0;
   const startingResearch = newLegacies.includes("FoundersStela")
@@ -86,7 +92,12 @@ export function ascend(state: GameState, legacy: LegacyId): {
     prestige: {
       legacies: newLegacies,
       ascensionCount,
+      chronicles: newChronicles,
     } as GameState["prestige"],
+    // Reset expedition state for new playthrough
+    pendingExpeditions: [],
+    completedExpeditions: [],
+    expeditionBonuses: [],
   };
 
   return {
