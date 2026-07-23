@@ -129,7 +129,7 @@ describe("Pochteca Expeditions", () => {
     });
 
     it("emits ExpeditionReturned event when resolving", () => {
-      let state = growthState(5000);
+      const state = growthState(5000);
       const { state: afterSend } = reducer(state, { type: "SendExpedition", destination: "lowlandForests" });
       const dest = getDestination("lowlandForests")!;
 
