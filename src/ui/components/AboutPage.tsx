@@ -63,6 +63,21 @@ export function AboutPage() {
           Everrealm to prove that accessible games can be genuinely fun, not
           just "accessible enough."
         </p>
+        <p>
+          <a href="https://lanie.work" target="_blank" rel="noopener noreferrer">Lanie's website: lanie.work</a>
+          <br />
+          Writing on disability, technology, healthcare, and faith.
+        </p>
+        <p>
+          <a href="https://github.com/RareBird15/everrealm" target="_blank" rel="noopener noreferrer">Everrealm on GitHub</a>
+          <br />
+          Source code, release notes, and issue reporting.
+        </p>
+        <p>
+          <a href="https://lanie.work/connect/" target="_blank" rel="noopener noreferrer">Contact and booking</a>
+          <br />
+          Available for accessibility testing, game accessibility reviews, and writing.
+        </p>
       </div>
     </details>
   );
