@@ -78,6 +78,11 @@ export function AboutPage() {
           <br />
           Available for accessibility testing, game accessibility reviews, and writing.
         </p>
+        <p>
+          <a href="https://gofund.me/0a62fcaa3" target="_blank" rel="noopener noreferrer">Support my GoFundMe</a>
+          <br />
+          Helping with living expenses, medical needs, and technology as I transition to a group home.
+        </p>
       </div>
     </details>
   );
