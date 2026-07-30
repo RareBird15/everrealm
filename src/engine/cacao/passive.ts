@@ -5,6 +5,7 @@ import { BASE_PASSIVE_RATE } from "../state/initialState";
 import { countSpecialization } from "../settlements/establish";
 import { levelIndex } from "../settlements/progression";
 import type { GameEvent } from "../events/GameEvent";
+import { calculateResources } from "../resources/calculate";
 
 /**
  * HYBRID INCOME SYSTEM
@@ -45,6 +46,18 @@ export function cacaoPerTurn(state: GameState): number {
   income += countSpecialization(state, "Market") * 2 * jadeBoost;
   income += countSpecialization(state, "Workshop") * 1 * jadeBoost;
   income += countSpecialization(state, "Estate") * 5 * jadeBoost;
+
+  // v1.2.0: Resource pipeline — Craft Districts produce bonus cacao
+  // only when they have Trade Goods flowing in from Markets.
+  // Each active Craft District (one with Trade Goods available) produces +4 cacao.
+  const resourceReport = calculateResources(state);
+  const tradeGoods = resourceReport.balances.find((b) => b.resource === "TradeGoods");
+  if (tradeGoods && tradeGoods.active) {
+    const totalCraftDistricts = countSpecialization(state, "CraftDistrict");
+    const idleCraftDistricts = resourceReport.idleConsumers.TradeGoods || 0;
+    const activeCraftDistricts = Math.max(0, totalCraftDistricts - idleCraftDistricts);
+    income += activeCraftDistricts * 4 * jadeBoost;
+  }
 
   // Gardens scale with total specializations
   const gardens = countSpecialization(state, "Garden");
@@ -95,17 +108,32 @@ export function passiveRatePerHour(state: GameState): number {
  * Shared between turn-based and clock-based income.
  */
 function applyMultipliers(state: GameState, amount: number): number {
-  // Each Aqueduct adds 5%
+  // v1.2.0: Resource pipeline affects multiplier strength.
+  // Temples with Knowledge get an extra 10% per active Temple.
+  // Aqueducts with Materials get an extra 3% per active Aqueduct.
+  const resourceReport = calculateResources(state);
+
+  // Each Aqueduct adds 5% base, plus 3% extra if fed by Materials
   const aqueducts = countSpecialization(state, "Aqueduct");
-  amount *= 1 + aqueducts * 0.05;
+  const materials = resourceReport.balances.find((b) => b.resource === "Materials");
+  const materialsActive = materials && materials.active;
+  const idleAqueducts = materialsActive ? (resourceReport.idleConsumers.Materials || 0) : 0;
+  const activeAqueducts = materialsActive ? Math.max(0, aqueducts - idleAqueducts) : aqueducts;
+  const aqueductBonus = aqueducts * 0.05 + (materialsActive ? activeAqueducts * 0.03 : 0);
+  amount *= 1 + aqueductBonus;
 
   // Each Treasury adds 8%
   const treasuries = countSpecialization(state, "Treasury");
   amount *= 1 + treasuries * 0.08;
 
-  // Each Temple adds 25%
+  // Each Temple adds 25% base, plus 10% extra if fed by Knowledge
   const temples = countSpecialization(state, "Temple");
-  amount *= 1 + temples * 0.25;
+  const knowledge = resourceReport.balances.find((b) => b.resource === "Knowledge");
+  const knowledgeActive = knowledge && knowledge.active;
+  const idleTemples = knowledgeActive ? (resourceReport.idleConsumers.Knowledge || 0) : 0;
+  const activeTemples = knowledgeActive ? Math.max(0, temples - idleTemples) : temples;
+  const templeBonus = temples * 0.25 + (knowledgeActive ? activeTemples * 0.10 : 0);
+  amount *= 1 + templeBonus;
 
   // Each Oracle adds 50%
   const oracles = countSpecialization(state, "Oracle");

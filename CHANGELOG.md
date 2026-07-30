@@ -5,6 +5,24 @@ All notable changes to Everrealm will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] — 2026-07-30
+
+### Added
+- **Resource Pipeline System.** Three intermediate resources — Trade Goods, Knowledge, and Materials — flow between specializations, creating a producer/consumer economy. Balance your production and consumption for maximum efficiency. Surplus is wasted, deficit means consumers go idle.
+  - **Trade Goods** (unlocks at Founding Age): Markets produce, Craft Districts consume. Each active Craft District generates +4 bonus cacao.
+  - **Knowledge** (unlocks at Age of Growth): Codex Houses produce, Temples consume. Each active Temple gets an extra +10% multiplier on top of its base 25%.
+  - **Materials** (unlocks at Age of City-States): Estates produce, Aqueducts consume. Each active Aqueduct gets an extra +3% multiplier on top of its base 5%.
+  - Resources unlock gradually so players learn one flow at a time.
+  - No stockpiling. Per-turn balance only. Forces strategic specialization decisions.
+  - **ResourcePanel UI.** New section showing production, consumption, and status (balanced, surplus, or deficit with idle consumer count) for each active resource. Screen-reader friendly with labeled definition list.
+- **Tests** for resource calculation (11 tests) and economy integration (5 tests). 121 total tests passing.
+
+### Changed
+- **Cacao income calculation** now accounts for resource pipeline. Craft Districts only produce bonus cacao when Trade Goods are available. Temple and Aqueduct multipliers are boosted when their respective resources are flowing.
+- No changes to existing save format. Backward compatible.
+
+---
+
 ## [1.1.0] — 2026-07-22
 
 ### Added

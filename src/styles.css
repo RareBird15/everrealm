@@ -464,3 +464,28 @@ select:focus-visible {
   font-size: 0.9em;
   color: var(--text-muted);
 }
+
+/* ── Resource Panel ── */
+
+.resource-panel dl {
+  margin: 0.5rem 0;
+}
+
+.resource-panel dt {
+  font-weight: bold;
+  margin-top: 0.75rem;
+}
+
+.resource-panel dd {
+  margin-left: 1rem;
+  margin-top: 0.25rem;
+}
+
+.resource-panel .resource-deficit {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.resource-panel .resource-surplus {
+  color: var(--text-muted);
+}

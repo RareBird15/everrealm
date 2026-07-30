@@ -476,7 +476,33 @@ complexity feels earned.
 
 ---
 
-## Part VIII – Realm Improvements
+## Part VIII – Resource Pipeline (v1.2.0)
+
+Three intermediate resources flow between specializations, creating a
+producer/consumer economy. The player must balance production and
+consumption for maximum efficiency.
+
+**Design principles:**
+- No stockpiling. Per-turn balance only. Surplus is wasted.
+- Deficit means consumers go idle (produce nothing).
+- Resources unlock gradually, one per Age, so players learn one flow at a time.
+- No spatial mechanics. The pipeline is purely numerical.
+
+**Resources and flows:**
+
+| Resource | Unlocks | Producer | Consumer | Consumer Bonus |
+|----------|---------|----------|----------|----------------|
+| Trade Goods | Founding Age | Market (+1/turn) | Craft District (-1/turn) | +4 cacao per active CD |
+| Knowledge | Age of Growth | Codex (+1/turn) | Temple (-1/turn) | +10% multiplier per active Temple |
+| Materials | Age of City-States | Estate (+1/turn) | Aqueduct (-1/turn) | +3% multiplier per active Aqueduct |
+
+The player sees a resource summary showing production, consumption, and
+status (balanced, surplus wasted, or deficit with idle consumers) for each
+active resource. Screen-reader friendly with labeled definition list.
+
+---
+
+## Part IX – Realm Improvements
 
 Realm improvements are realm-wide bonuses purchased with cacao. They
 exist alongside the specialization system and provide another way to spend
@@ -488,7 +514,7 @@ improvement definitions will be finalized during implementation.
 
 ---
 
-## Part IX – Open Questions
+## Part X – Open Questions
 
 The following will be finalized during implementation:
 
@@ -503,7 +529,7 @@ The following will be finalized during implementation:
 
 ---
 
-## Part X – Comparison to Previous Design (0.1–0.2.x)
+## Part XI – Comparison to Previous Design (0.1–0.2.x)
 
 ### What changed
 
@@ -531,7 +557,7 @@ The following will be finalized during implementation:
 
 ---
 
-## Part XI – Inspiration and Differentiation
+## Part XII – Inspiration and Differentiation
 
 ### Inspired by Evolve Incremental
 

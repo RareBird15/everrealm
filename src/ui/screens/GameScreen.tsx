@@ -11,6 +11,7 @@ import { ResearchList } from "../components/ResearchList";
 import { StoryLog } from "../components/StoryLog";
 import { ActionBar } from "../components/ActionBar";
 import { ExpeditionPanel } from "../components/ExpeditionPanel";
+import { ResourcePanel } from "../components/ResourcePanel";
 import { OfflineEarnings } from "../components/OfflineEarnings";
 import { OnboardingTip } from "../components/OnboardingTip";
 import { AboutPage } from "../components/AboutPage";
@@ -107,6 +108,8 @@ export function GameScreen({ game }: Props) {
       <BatchActions game={game} />
 
       <ExpeditionPanel game={game} />
+
+      <ResourcePanel state={game.state} />
 
       <ResearchList game={game} />
 
