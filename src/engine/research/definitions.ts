@@ -105,7 +105,7 @@ const FOUNDING_SPECS: readonly ResearchNode[] = [
       { kind: "PassiveIncomePerHour", amount: 2 },
       { kind: "EstablishBonusPer", amount: 2 },
     ],
-    buildingDescription: "Markets generate +2 Cacao per hour and add +2 to establish rewards for each Market.",
+    buildingDescription: "Markets generate +2 Cacao per hour, add +2 to establish rewards for each Market, and produce 1 Trade Good per turn. Trade Goods are consumed by Craft Districts.",
   },
   {
     id: rid("crafts"),
@@ -164,7 +164,7 @@ const GROWTH_SPECS: readonly ResearchNode[] = [
     buildingEffects: [
       { kind: "DiscoveryBonusPer", amount: 25 },
     ],
-    buildingDescription: "Each Codex adds +25 to each discovery reward. The more codices your realm keeps, the faster new knowledge spreads.",
+    buildingDescription: "Each Codex adds +25 to each discovery reward and produces 1 Knowledge per turn. Knowledge is consumed by Temples to boost their multiplier.",
   },
   {
     id: rid("governance"),
@@ -190,7 +190,7 @@ const GROWTH_SPECS: readonly ResearchNode[] = [
     buildingEffects: [
       { kind: "PassiveRateMultiplierPer", amount: 0.05 },
     ],
-    buildingDescription: "Each Aqueduct increases the base passive income rate by 5%.",
+    buildingDescription: "Each Aqueduct increases the base passive income rate by 5% and consumes 1 Material per turn. When fed by Materials from Estates, Aqueducts gain an extra +3% multiplier. Without enough Materials, some Aqueducts go idle.",
   },
 ];
 
@@ -236,7 +236,7 @@ const CITY_STATE_SPECS: readonly ResearchNode[] = [
       { kind: "PassiveIncomePerHour", amount: 5 },
       { kind: "ScalesWithBuildings", buildings: ["Farm", "Market", "Workshop", "Codex", "Council", "Aqueduct"], amountPerBuilding: 1 },
     ],
-    buildingDescription: "Estates generate +5 Cacao per hour, plus +1 per hour for each other specialized building in your realm.",
+    buildingDescription: "Estates generate +5 Cacao per hour, plus +1 per hour for each other specialized building, and produce 1 Material per turn. Materials are consumed by Aqueducts.",
   },
   {
     id: rid("cacaoTreasury"),
@@ -307,7 +307,7 @@ const SPLENDOR_SPECS: readonly ResearchNode[] = [
     buildingEffects: [
       { kind: "ScalesWithBuildings", buildings: ["Farm", "Workshop"], amountPerBuilding: 4 },
     ],
-    buildingDescription: "Craft Districts generate +4 Cacao per hour for each Farm and Workshop in your realm. Early investments pay off.",
+    buildingDescription: "Craft Districts consume 1 Trade Good per turn and generate +4 Cacao per hour when active. Trade Goods are produced by Markets. Without enough Markets, some Craft Districts go idle.",
   },
   {
     id: rid("diplomacy"),
@@ -380,7 +380,7 @@ const LEGENDS_SPECS: readonly ResearchNode[] = [
     buildingEffects: [
       { kind: "RealmPassiveMultiplier", amount: 0.25 },
     ],
-    buildingDescription: "Each Temple multiplies all passive income across your entire realm by 25%. The biggest passive multiplier available.",
+    buildingDescription: "Each Temple multiplies all passive income by 25% and consumes 1 Knowledge per turn. When fed by Knowledge from Codex Houses, Temples gain an extra +10% multiplier. Without enough Knowledge, some Temples go idle.",
   },
   {
     id: rid("gardenCultivation"),
